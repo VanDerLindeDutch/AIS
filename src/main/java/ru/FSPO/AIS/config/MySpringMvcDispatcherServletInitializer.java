@@ -1,15 +1,17 @@
 package ru.FSPO.AIS.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.nio.file.Paths;
 
 public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return null;
@@ -25,6 +27,17 @@ public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationC
         return new String[]{"/"};
     }
 
+//    @Override
+//    public void onStartup(ServletContext aServletContext) throws ServletException {
+//        super.onStartup(aServletContext);
+//        registerHiddenFieldFilter(aServletContext);
+//    }
+//
+//    private void registerHiddenFieldFilter(ServletContext aContext) {
+//        aContext.addFilter("hiddenHttpMethodFilter",
+//                new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null, true, "/*");
+//    }
+
     @Override
     protected Filter[] getServletFilters() {
         Filter[] filters;
@@ -33,7 +46,7 @@ public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationC
         encFilter = new CharacterEncodingFilter();
         encFilter.setEncoding("UTF-8");
         encFilter.setForceEncoding(true);
-        filters = new Filter[] {httpMethodFilter, encFilter};
+        filters = new Filter[]{httpMethodFilter, encFilter};
         return filters;
     }
 

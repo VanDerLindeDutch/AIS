@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../../../resources/landlord/login.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="login-form">
+    <form th:action="@{/landlord/login}" th:method="POST" th:object="${bcLink}">
+        <h2 class="text-center">Авторизация</h2>
+        <div class="form-group">
+            <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">
+        </div>
+        <div class="form-group">
+            <input th:field="*{password}" type="password" class="form-control" placeholder="Пароль" required="required">
+        </div>
+        <div class="form-group regBut">
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </div>
+        <a href="/start" class="btn btn-secondary"> Назад</a>
+    </form>
+</div>
+<div id="error" role="alert" class="alert alert-primary" th:if="${isCorrect == false}">Логин или пароль введены неверно. Попробуйте ещё раз.</div>
+
+</body>
+</html>

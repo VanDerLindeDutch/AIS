@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="../../../resources/landlord/login.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="login-form">
+    <form th:action="@{/landlord/register}" th:method="POST" th:object="${bcLink}">
+        <h2 class="text-center">Регистрация</h2>
+        <div class="form-group">
+            <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">
+            <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="alert alert-primary" role="alert">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input th:field="*{password}" type="password" class="form-control" placeholder="Пароль" required="required">
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="alert alert-primary" role="alert">
+            </div>
+        </div>
+        <div class="form-group">
+            <input th:field="*{firstName}" type="text" class="form-control" placeholder="Имя" required="required">
+            <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="alert alert-primary" role="alert">
+            </div>
+        </div>
+        <div class="form-group">
+            <input th:field="*{email}" type="email" class="form-control" placeholder="Email" required="required">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="alert alert-primary" role="alert">
+            </div>
+        </div>
+        <div class="form-group">
+            <input th:field="*{birthDate}" required="" type="text" class="form-control" placeholder="Дата рождения" onfocus="(this.type='date')"/>
+        </div>
+        <div class="form-group regBut">
+            <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+        </div>
+        <a href="/start" class="btn btn-secondary"> Назад</a>
+    </form>
+</div>
+</body>
+</html>

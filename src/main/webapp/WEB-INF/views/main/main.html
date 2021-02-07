@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <link rel="stylesheet" href="../../resources/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/start">AIS FSPO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
+            </li>
+            <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
+                <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
+            </li>
+        </ul>
+    </div>
+    <div style="position: absolute; right: 10%;">
+        <a href="/start" class="nav-link">ВЫЙТИ</a>
+    </div>
+</nav>
+
+<div class="container" >
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-image">
+                <thead>
+                <tr>
+                    <th class="content" scope="col">Фото</th>
+                    <th class="content" scope="col">Адрес</th>
+                    <th class="content" scope="col">Полное наименование</th>
+                    <th class="content" scope="col">Название</th>
+                    <th class="content" scope="col">Кнопка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="BC : ${centers}">
+                    <!--                    {/uploads/{ref}(id=${BC.getImagePath()})}-->
+                    <td class="w-25">
+                        <img th:src="@{/resources/uploads/{ref}(ref=${BC.getImagePath()})}"
+                             class="img-fluid img-thumbnail" alt="Sheep">
+                    </td>
+                    <td class="content" th:text="${BC.getAddress()}"></td>
+                    <td class="content" th:text="${BC.getName()}"></td>
+                    <td class="content" th:text="${BC.getShortName()}"></td>
+                    <td>
+                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

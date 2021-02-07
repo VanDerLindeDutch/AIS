@@ -1,0 +1,27 @@
+.login-form{
+    position: absolute;
+    left: 35%;
+    width: 25%;
+}
+
+.regBut{
+    position: absolute;
+    left: 30%;
+    width: 45%;
+}
+.btn-secondary{
+    width: 30%;
+    position: relative;
+    top:50px;
+    left:38%;
+}
+.alert{
+    position: relative;
+    top:10px;
+}
+#error{
+    position: absolute;
+    top:30%;
+    left: 35%;
+}
+

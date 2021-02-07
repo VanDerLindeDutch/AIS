@@ -1,4 +1,5 @@
 .button {
+    cursor: pointer;
     position: absolute;
     top: 45%;
     border: none;
@@ -10,46 +11,49 @@
 
 #buttonLoginRenter {
     right: 10%;
-    background: aqua;
+    background: dimgrey;
+    color: white;
 }
 
-#buttonRegisterRenter{
+#buttonRegisterRenter {
     right: 10%;
-    background: aqua;
-    top:70%
+    background: dimgrey;
+    color: white;
+    top: 70%
 }
 
 #buttonLoginLandlord {
     left: 10%;
-    background: saddlebrown;
+    background: white;
 }
 
 
-#buttonRegisterLandlord{
+#buttonRegisterLandlord {
     left: 10%;
-    background: saddlebrown;
-    top:70%
+    background: white;
+    top: 70%
 }
 
 #renter {
     position: absolute;
     top: 30%;
-    right: 15%;
+    right: 13%;
     font-size: 70px;
-    color: cornsilk;
+    color: black;
 }
 
 #landlord {
     position: absolute;
     top: 30%;
-    left: 13%;
+    left: 10%;
     font-size: 70px;
     color: white;
 }
 
 #loginRenter {
+    transition: 2s;
     z-index: 6;
-    background: saddlebrown ;
+    background: white;
     position: absolute;
     right: 50%;
     height: 100%;
@@ -58,8 +62,10 @@
 }
 
 #loginLandlord {
+
+    transition: 2s;
     z-index: 5;
-    background: aqua;
+    background: dimgrey;
     position: absolute;
     left: 50%;
     width: 100%;
@@ -69,14 +75,18 @@
 
 #loginRenter:hover {
     right: 45%;
-    transition-duration: 2s;
-}
 
-#loginLandlord:hover {
-    z-index: 10;
+
 }
 
 #loginLandlord:hover {
     left: 45%;
-    transition-duration: 2s;
+    z-index: 10;
+
+
 }
+
+.loginLandLord:hover{
+    z-index: 10;
+}
+
