@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="login-form">
-    <form th:action="@{/renter/register}" th:method="POST" th:object="${renterLink}">
+    <form th:action="@{/renter/register}" th:method="POST" th:object="${renterLink}" enctype="multipart/form-data">
         <h2 class="text-center">Регистрация</h2>
         <div class="form-group">
             <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">

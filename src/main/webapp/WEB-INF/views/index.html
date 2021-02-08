@@ -4,25 +4,31 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../../resources/index.css">
+
 </head>
 <body>
-<div id="loginRenter">
-    <span id="renter">АРЕНДАТОР</span>
-    <form action="/renter/login">
-        <input type="submit" value="Войти" id="buttonLoginRenter" class="button">
-    </form>
-    <form action="/renter/register">
-        <input type="submit" value="Зарегистрироваться" id="buttonRegisterRenter" class="button">
-    </form>
+<div id="mainDiv">
+
+    <div id="loginRenter" >
+        <span id="renter">АРЕНДАТОР</span>
+        <form action="/renter/login">
+            <input type="submit" value="Войти" id="buttonLoginRenter" class="button">
+        </form>
+        <form action="/renter/register">
+            <input type="submit" value="Зарегистрироваться" id="buttonRegisterRenter" class="button">
+        </form>
+    </div>
+    <div id="loginLandlord" >
+        <span id="landlord">АРЕНДОДАТЕЛЬ</span>
+        <form action="/landlord/login">
+            <input type="submit" value="Войти" id="buttonLoginLandlord" class="button">
+        </form>
+        <form action="/landlord/register">
+            <input type="submit" value="Зарегистрироваться" id="buttonRegisterLandlord" class="button">
+        </form>
+    </div>
+
 </div>
-<div id="loginLandlord" class="loginLandLord">
-    <span id="landlord">АРЕНДОДАТЕЛЬ</span>
-    <form action="/landlord/login">
-        <input type="submit" value="Войти" id="buttonLoginLandlord" class="button">
-    </form>
-    <form action="/landlord/register">
-        <input type="submit" value="Зарегистрироваться" id="buttonRegisterLandlord" class="button">
-    </form>
-</div>
+<script src="../../resources/index.js"></script>
 </body>
 </html>

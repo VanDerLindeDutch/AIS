@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="login-form">
-    <form th:action="@{/landlord/register}" th:method="POST" th:object="${bcLink}">
+    <form th:action="@{/landlord/register}" th:method="POST" th:object="${bcLink}" enctype="multipart/form-data">
         <h2 class="text-center">Регистрация</h2>
         <div class="form-group">
             <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">
