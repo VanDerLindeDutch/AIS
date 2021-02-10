@@ -9,6 +9,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 public class UploadConfig {
     @Bean(name = "multipartResolver")
     public MultipartResolver multipartResolver() {
+
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setMaxUploadSize(10000000);
         return commonsMultipartResolver;

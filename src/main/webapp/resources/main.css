@@ -9,18 +9,14 @@
     font-size: 150%;
     font-family: "Times New Roman";
 }
-/*.table{*/
-/*    counter-reset: i;*/
-/*}*/
-/*.table tr{*/
-/*    counter-increment: i;*/
-/*}*/
-/*.table tr:before{*/
-/*    content: counter(i);*/
-/*}*/
-/*.table tr:before:nth-child(2){*/
-/*    color:red;*/
-/*}*/
+
+.info{
+    position: relative;
+    left: 30%;
+    top:10%;
+    margin-bottom: 50px;
+    font-size: 3vw;
+}
 #name:before{
     content: "Название БЦ - ";
 }
@@ -32,8 +28,19 @@
 #photo:before{
     content: "Фото БЦ - ";
 }
-#change_form{
+
+
+.buttons{
     position: relative;
-    left: 38%;
-    top:50px;
+    width: 8%;
+    margin-top:5%;
+    left:35%
 }
+
+#floorButton{
+    position: absolute;
+    margin-top:10%;
+    width: 20%;
+
+}
+

@@ -55,7 +55,7 @@ public class LandlordController {
         if (bindingResult.hasErrors()) {
             return "landlord/register";
         }
-        bcLinkDAO.save(bcLink);
+        bcLinkDAO.insert(bcLink);
         return "redirect:/start";
     }
 

@@ -11,11 +11,11 @@ import ru.FSPO.AIS.models.RenterLink;
 import java.util.List;
 
 @Component
-public class RenterLinkDao {
+public class RenterLinkDAO {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public RenterLinkDao(JdbcTemplate jdbcTemplate) {
+    public RenterLinkDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

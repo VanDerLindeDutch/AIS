@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.FSPO.AIS.dao.RenterLinkDao;
+import ru.FSPO.AIS.dao.RenterLinkDAO;
 import ru.FSPO.AIS.dao.UserType;
 import ru.FSPO.AIS.models.RenterLink;
 
@@ -17,9 +17,9 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/renter")
 public class RenterController {
-    private final RenterLinkDao renterLinkDao;
+    private final RenterLinkDAO renterLinkDao;
     @Autowired
-    public RenterController(RenterLinkDao renterLinkDao) {
+    public RenterController(RenterLinkDAO renterLinkDao) {
         this.renterLinkDao = renterLinkDao;
     }
 
@@ -49,6 +49,7 @@ public class RenterController {
         model.addAttribute("renterLink", new RenterLink());
         return "renter/register";
     }
+
     @PostMapping("/register")
     public String register(@ModelAttribute("renterLink") @Valid RenterLink renterLink, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
@@ -57,4 +58,5 @@ public class RenterController {
         renterLinkDao.save(renterLink);
         return "redirect:/start";
     }
+
 }
