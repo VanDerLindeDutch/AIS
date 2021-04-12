@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Main</title>
+    <title>Title</title>
     <link rel="stylesheet" href="../../resources/main.css">
-    <link rel="stylesheet" href="../../resources/show.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -19,7 +18,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main}">Показать БЦ <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
             </li>
             <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
                 <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
@@ -30,35 +29,28 @@
         </ul>
     </div>
     <div style="position: absolute; right: 10%;">
-        <a href="/logout" class="nav-link">ВЫЙТИ</a>
+        <a href="/start" class="nav-link">ВЫЙТИ</a>
     </div>
 </nav>
-
 <div class="container" >
     <div class="row">
         <div class="col-12">
-            <table class="table table-image" style="position:relative; margin:0;padding:0; left:-10%; width:70vw">
+            <table class="table table-image">
                 <thead>
                 <tr>
-                    <th class="content" scope="col">Фото</th>
-                    <th class="content" scope="col">Адрес</th>
-                    <th class="content" scope="col">Полное наименование</th>
-                    <th class="content" scope="col">Название</th>
-                    <th class="content" scope="col">Кнопка</th>
+                    <th class="content" scope="col">Рента</th>
+                    <th class="content" scope="col">Начало аренды</th>
+                    <th class="content" scope="col">Конец аренды</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="BC : ${centers}">
-                    <td class="w-25">
-                        <img th:src="@{/resources/uploads/{ref}(ref=${BC.getImagePath()})}"
-                             class="img-fluid img-thumbnail" alt="Sheep">
-                    </td>
-                    <td class="content"  th:text="${BC.getAddress()}"></td>
-                    <td class="content" th:text="${BC.getName()}"></td>
-                    <td class="content" th:text="${BC.getShortName()}"></td>
-                    <td>
-                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>
-                    </td>
+                <tr th:each="rPL : ${rentedPlacements}">
+                    <td class="content" th:text="${rPL.getRent()}"></td>
+                    <td class="content" th:text="${rPL.getStartOfRent()}"></td>
+                    <td class="content" th:text="${rPL.getEndOfRent()}"></td>
+<!--                    <td>-->
+<!--                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>-->
+<!--                    </td>-->
                 </tr>
                 </tbody>
             </table>

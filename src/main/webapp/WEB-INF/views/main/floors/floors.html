@@ -17,7 +17,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/main}">Показать БЦ <span class="sr-only">(current)</span></a>
             </li>
             <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
                 <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
@@ -38,7 +38,7 @@
                     <th class="content" scope="col">Описание</th>
                     <th class="content" scope="col">Номер Этажа</th>
                     <th class="content" scope="col">Кнопка</th>
-                    <th class="content" scope="col">Удалить</th>
+                    <th th:if="${isCurrentUser}" class="content" scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@
                         <a class="btn btn-primary"
                            th:href="${'/main/'+{floor.getBcId()}+'/floors/'+{floor.getFloorId()} + '/placements'}">Перейти</a>
                     </td>
-                    <td>
+                    <td th:if="${isCurrentUser}">
                         <form th:method="POST"
                               th:action="${'/main/'+{floor.getBcId()}+'/floors/'+{floor.getFloorId()+'/del'}}" style="display: inline" >
                             <input type="submit" class="btn btn-danger" role="button" aria-pressed="true" value="Удалить"/>
@@ -62,7 +62,7 @@
                 </tr>
                 </tbody>
             </table>
-            <a style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%" th:href="@{/main/{id}/floors/new(id=${bcID})}" class="btn btn-info" role="button" aria-pressed="true">Добавить
+            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%" th:href="@{/main/{id}/floors/new(id=${bcID})}" class="btn btn-info" role="button" aria-pressed="true">Добавить
                 этаж</a>
         </div>
     </div>

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.FSPO.AIS.dao.mappers.FloorMapper;
 import ru.FSPO.AIS.models.Floor;
+import ru.FSPO.AIS.services.FloorException;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class FloorDAO {
     }
 
     public void insert(Floor floor) {
+//        if(getBcsFloors((int) floor.getBcId()).stream().noneMatch(floor1 -> floor1.getFloorNumber()==floor.getFloorNumber())){
+//            throw new FloorException("Повторяющийся номер этажа");
+//        }
         jdbcTemplate.update("INSERT INTO floor (floor_number, bc_id, description, image_path) VALUES(?, ?, ?, ?)", floor.getFloorNumber(), floor.getBcId(), floor.getDescription(), floor.getImagePath());
     }
 

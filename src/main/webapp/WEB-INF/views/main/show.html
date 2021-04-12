@@ -18,7 +18,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/main}">Показать БЦ <span class="sr-only">(current)</span></a>
             </li>
             <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
                 <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
@@ -35,22 +35,24 @@
     <img width="400" height="300" id="photo" th:src="@{/resources/uploads/{ref}(ref=${businessCenter.getImagePath()})}"
          class="bc_content img-fluid img-thumbnail">
 </div>
-<div>
-    <div style="display: inline" th:if="${ID==businessCenter.getBcLinkId()}">
-        <a th:href="@{/main/{id}/edit(id=${businessCenter.getBcId()})}" class="btn btn-warning buttons" role="button"
-           aria-pressed="true">Изменить</a>
-        <form th:method="POST"
-              th:action="@{/main/{id}/del(id=${businessCenter.getBcId()})}" style="display: inline" >
-            <input type="submit" class="btn btn-danger buttons" role="button" aria-pressed="true" value="Удалить"/>
-        </form>
-    </div>
-    <span th:style="${USERTYPE=='LANDLORD' ? '' : 'position: relative;left: 35%;'}">
-    <a th:style="${USERTYPE=='LANDLORD' ? 'margin-left:2%;' : ''}"  id="floorButton"  th:href="@{/main/{id}/floors(id=${businessCenter.getBcId()})}" class="btn btn-secondary buttons"
+<div style="display: flex; flex-direction: column; justify-content: center">
+
+    <span>
+    <a style="width:10%;margin-right: 5%" id="floorButton" th:href="@{/main/{id}/floors(id=${businessCenter.getBcId()})}"
+       class="btn btn-secondary buttons"
        role="button" aria-pressed="true">Этажи</a>
-    <a th:style="${USERTYPE=='LANDLORD' ? '' : 'width:20%'}" id="bcLinkButton" th:href="@{/main/{id}/bcLink(id=${businessCenter.getBcId()})}"
+    <a style="width:10%" id="bcLinkButton" th:href="@{/main/{id}/bcLink(id=${businessCenter.getBcId()})}"
        class="btn btn-info buttons"
        role="button" aria-pressed="true">Владелец</a>
-        </span>
+    </span>
+    <div th:if="${isCurrentUser==true}" >
+        <a style="width:10%;margin-right: 5%" th:href="@{/main/{id}/edit(id=${businessCenter.getBcId()})}" class="btn btn-warning buttons" role="button"
+           aria-pressed="true">Изменить</a>
+        <form  th:method="POST"
+              th:action="@{/main/{id}/del(id=${businessCenter.getBcId()})}" style="display: inline">
+            <input style="width:10%" type="submit" class="btn btn-danger buttons" role="button" aria-pressed="true" value="Удалить"/>
+        </form>
+    </div>
 </div>
 </body>
 </html>

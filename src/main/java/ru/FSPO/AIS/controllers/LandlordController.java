@@ -26,23 +26,23 @@ public class LandlordController {
 
     @GetMapping("/login")
     public String getLoginPage(Model model) {
-        model.addAttribute("bcLink", new BcLink());
+//        model.addAttribute("bcLink", new BcLink());
         return "landlord/login";
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute("bcLink") BcLink bcLink, Model model) {
-        bcLink = bcLinkDAO.login(bcLink);
-        if (bcLink == null) {
-            model.addAttribute("isCorrect", false);
-            return "landlord/login";
-        } else {
-            model.addAttribute("USERTYPE", UserType.LANDLORD);
-            model.addAttribute("ID", bcLink.getBcLinkId());
-            return "redirect:/main";
-        }
-
-    }
+//    @PostMapping("/login")
+//    public String login(@ModelAttribute("bcLink") BcLink bcLink, Model model) {
+//        bcLink = bcLinkDAO.login(bcLink);
+//        if (bcLink == null) {
+//            model.addAttribute("isCorrect", false);
+//            return "landlord/login";
+//        } else {
+//            model.addAttribute("USERTYPE", UserType.LANDLORD);
+//            model.addAttribute("ID", bcLink.getId());
+//            return "redirect:/main";
+//        }
+//
+//    }
 
     @GetMapping("/register")
     public String getRegisterPage(Model model) {

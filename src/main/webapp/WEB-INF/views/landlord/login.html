@@ -8,13 +8,13 @@
 </head>
 <body>
 <div class="login-form">
-    <form th:action="@{/landlord/login}" th:method="POST" th:object="${bcLink}">
+    <form th:action="@{/landlord/login}" th:method="POST">
         <h2 class="text-center">Авторизация</h2>
         <div class="form-group">
-            <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">
+            <input id="username" name="username" type="text" class="form-control" placeholder="Логин" required="required">
         </div>
         <div class="form-group">
-            <input th:field="*{password}" type="password" class="form-control" placeholder="Пароль" required="required">
+            <input id="password" name="password" type="password" class="form-control" placeholder="Пароль" required="required">
         </div>
         <div class="form-group regBut">
             <button type="submit" class="btn btn-primary btn-block">Войти</button>

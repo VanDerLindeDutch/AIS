@@ -1,16 +1,15 @@
 package ru.FSPO.AIS.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import org.springframework.stereotype.Component;
-
 import ru.FSPO.AIS.dao.mappers.BcLinkMapper;
-
+import ru.FSPO.AIS.dao.mappers.RenterLinkMapper;
 import ru.FSPO.AIS.models.BcLink;
+import ru.FSPO.AIS.models.RenterLink;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BcLinkDAO {
@@ -31,6 +30,10 @@ public class BcLinkDAO {
     public void insert(BcLink bcLink) {
 
         jdbcTemplate.update("INSERT INTO bc_link (first_name, birth_date, login, password, email)  VALUES  ( ?, ?, ?, ?, ?)", bcLink.getFirstName(), bcLink.getBirthDate(), bcLink.getLogin(), bcLink.getPassword(), bcLink.getEmail());
+    }
+
+    public Optional<BcLink> getByLogin(String login){
+        return jdbcTemplate.query("SELECT * FROM bc_link WHERE login = ?", new Object[]{login}, new BcLinkMapper()).stream().findAny();
     }
 
     public BcLink login(BcLink bcLink) {

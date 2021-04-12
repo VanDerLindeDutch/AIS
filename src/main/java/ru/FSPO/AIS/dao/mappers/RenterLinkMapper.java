@@ -11,7 +11,7 @@ public class RenterLinkMapper implements RowMapper<RenterLink> {
     @Override
     public RenterLink mapRow(ResultSet resultSet, int i) throws SQLException {
         RenterLink renterLink = new RenterLink();
-        renterLink.setRenterId(resultSet.getInt("renter_id"));
+        renterLink.setId(resultSet.getInt("renter_id"));
         renterLink.setLogin(resultSet.getString("login"));
         renterLink.setPassword(resultSet.getString("password"));
         renterLink.setCompanyId(resultSet.getInt("company_id"));

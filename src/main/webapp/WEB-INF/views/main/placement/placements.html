@@ -17,7 +17,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/main}">Показать БЦ <span class="sr-only">(current)</span></a>
             </li>
             <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
                 <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
@@ -37,8 +37,8 @@
                     <th class="content" scope="col">Этаж</th>
                     <th class="content" scope="col">Площадь</th>
                     <th class="content" scope="col">Цена</th>
-                    <th th:if="" class="content" scope="col">Арендовать</th>
-                    <th class="content" scope="col">Удалить</th>
+                    <th th:if="${USERTYPE == 'RENTER'}" class="content" scope="col">Арендовать</th>
+                    <th th:if="${isCurrentUser}" class="content" scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,11 +46,11 @@
                     <td class="content" th:text="${floorNumber}"></td>
                     <td class="content" th:text="${place.getSurface()}"></td>
                     <td class="content" th:text="${place.getPrice()}"></td>
-                    <td>
+                    <td th:if="${USERTYPE == 'RENTER'}">
                         <a class="btn btn-primary"
-                           th:href="${'/main/'+{floor.getBcId()}+'/floors/'+{floor.getFloorId()} + '/placements'}">Арендовать</a>
+                           th:href="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.getPlacementId()}+'/rent'}">Арендовать</a>
                     </td>
-                    <td>
+                    <td th:if="${isCurrentUser}" >
                         <form th:method="POST"
                               th:action="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.getPlacementId()}+'/del'}"
                               style="display: inline">
@@ -61,8 +61,8 @@
                 </tr>
                 </tbody>
             </table>
-            <a style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%"
-               th:href="@{/main/{id}/floors/{flID}/placements/new(id=${bcID}, flID=${floorID})}" class="btn btn-info"
+            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%"
+               th:href="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/new'}" class="btn btn-info"
                role="button" aria-pressed="true">Добавить
                 помещение</a>
         </div>

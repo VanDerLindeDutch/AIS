@@ -1,6 +1,7 @@
 package ru.FSPO.AIS.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.FSPO.AIS.config.SecurityConfig;
 import ru.FSPO.AIS.dao.RenterLinkDAO;
 import ru.FSPO.AIS.dao.UserType;
 import ru.FSPO.AIS.models.RenterLink;
@@ -28,21 +30,20 @@ public class RenterController {
         model.addAttribute("renterLink", new RenterLink());
         return "renter/login";
     }
-    @PostMapping("/login")
+   /* @PostMapping("/login")
     public String login(@ModelAttribute("renterLink") RenterLink renterLink, Model model){
         renterLink =renterLinkDao.login(renterLink);
         if(renterLink==null){
-
             model.addAttribute("isCorrect", false);
             return "renter/login";
         }
         else {
             model.addAttribute("USERTYPE", UserType.RENTER);
-            model.addAttribute("ID", renterLink.getRenterId());
+            model.addAttribute("ID", renterLink.getId());
             return "redirect:/main";
         }
 
-    }
+    }*/
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -55,6 +56,7 @@ public class RenterController {
         if(bindingResult.hasErrors()){
             return "renter/register";
         }
+        renterLink.setPassword(SecurityConfig.passwordEncoder().encode(renterLink.getPassword()));
         renterLinkDao.save(renterLink);
         return "redirect:/start";
     }
