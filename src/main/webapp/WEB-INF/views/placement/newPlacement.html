@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../../../../resources/landlord/login.css">
+    <link rel="stylesheet" href="../../../resources/landlord/login.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
+<nav th:replace="fragments/navbar:: navbar"></nav>
+
 <div class="login-form">
-    <form th:action="@{/main/{id}/floors/{fID}/placements/{placeID}/rent(id=${bcID}, fID=${floorID}, placeID=${plID})}" th:object="${rentedPlacement}" th:method="POST" enctype="multipart/form-data">
-        <h2 class="text-center">Арендовать помещение</h2>
+    <form th:action="@{/main/{id}/floors/{fID}/placements/new(id=${bcID}, fID=${floorID})}" th:object="${placement}" th:method="POST" enctype="multipart/form-data">
+        <h2 class="text-center">Добавить этаж</h2>
         <div class="form-group">
-            <input th:field="*{rent}" type="number" class="form-control" placeholder="Рента" required="required">
+            <input th:field="*{surface}" type="number" class="form-control" placeholder="Площадь" required="required">
             <!--<div th:if="${#fields.hasErrors('floorNumber')}" th:errors="*{floorNumber}" class="alert alert-primary" role="alert">
             </div>-->
         </div>
         <div class="form-group">
-            <input th:field="*{startOfRent}" type="date" class="form-control" placeholder="Начало аренды" required="required">
-            <!--<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-primary" role="alert">
-            </div>-->
-        </div>
-        <div class="form-group">
-            <input th:field="*{endOfRent}" type="date" class="form-control" placeholder="Окончание аренды" required="required">
+            <input th:field="*{price}" type="number" class="form-control" placeholder="Цена" required="required">
             <!--<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-primary" role="alert">
             </div>-->
         </div>
@@ -31,9 +28,6 @@
         </div>
     </form>
 </div>
-
-
-
 
 </body>
 </html>

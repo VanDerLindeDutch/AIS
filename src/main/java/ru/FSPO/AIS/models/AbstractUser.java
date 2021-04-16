@@ -7,7 +7,6 @@ public abstract class AbstractUser {
     protected long id;
     @Size(min = 3, max=20, message = "Name should be between 3 and 20 characters")
     protected String firstName;
-    //  private String lastName;
     protected java.sql.Date birthDate;
     @Size(min = 10, max= 100,message = "Email should be valid")
     protected String email;

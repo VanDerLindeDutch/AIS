@@ -1,9 +1,11 @@
 package ru.FSPO.AIS.controllers;
 
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static ru.FSPO.AIS.services.DownloadFileService.DownloadFile;
 
@@ -39,23 +41,24 @@ public class MainController {
     private final FloorDAO floorDAO;
     private final PlacementDAO placementDAO;
     private final RentedPlacementDAO rentedPlacementDAO;
+    private final RequestToBcLinkDAO requestToBcLinkDAO;
     private static final String UPLOAD_DIR = "C:\\Users\\Lamer\\Desktop\\AIS\\src\\main\\webapp\\resources\\uploads\\";
     private static final String UPLOAD_FLOOR_DIR = "C:\\Users\\Lamer\\Desktop\\AIS\\src\\main\\webapp\\resources\\floorsPhotos\\";
 
     @Autowired
-    public MainController(BcLinkDAO bcLinkDAO, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO) {
+    public MainController(BcLinkDAO bcLinkDAO, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO) {
         this.bcLinkDAO = bcLinkDAO;
         this.businessCenterDAO = businessCenterDAO;
         this.floorDAO = floorDAO;
         this.placementDAO = placementDAO;
         this.rentedPlacementDAO = rentedPlacementDAO;
+        this.requestToBcLinkDAO = requestToBcLinkDAO;
     }
 
 
     private void setPresentUser(Model model) {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            System.out.println(securityUser.getRole());
             addIdAndUsertype(model, securityUser.getId(), securityUser.getRole());
         }
     }
@@ -123,7 +126,6 @@ public class MainController {
         businessCenter.setImagePath(file.getOriginalFilename());
         businessCenter.setBcLinkId(securityUser.getId());
         businessCenterDAO.save(businessCenter);
-        setPresentUser(model);
         return "redirect:/main";
     }
 
@@ -142,14 +144,12 @@ public class MainController {
         }
         businessCenter.setImagePath(imagePath);
         businessCenterDAO.update(bcID, businessCenter);
-        setPresentUser(model);
         return "redirect:/main";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("/{bcID}/del")
     public String delete(@PathVariable("bcID") int bcId, Model model) {
-        setPresentUser(model);
         businessCenterDAO.drop(bcId);
         return "redirect:/main";
     }
@@ -170,7 +170,7 @@ public class MainController {
         model.addAttribute("floors", floorDAO.getBcsFloors(bcID));
         model.addAttribute("bcID", bcID);
         model.addAttribute("isCurrentUser", businessCenterDAO.get(bcID).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
-        return "main/floors/floors";
+        return "floors/floors";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
@@ -179,7 +179,7 @@ public class MainController {
         setPresentUser(model);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floor", new Floor());
-        return "main/floors/newFloor";
+        return "floors/newFloor";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
@@ -193,7 +193,6 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setPresentUser(model);
         floor.setBcId(bcID);
         floor.setImagePath(file.getOriginalFilename());
         floorDAO.insert(floor);
@@ -204,7 +203,6 @@ public class MainController {
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/del")
     public String deleteFloor(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorId, Model model) {
-        setPresentUser(model);
         floorDAO.delete(floorId);
         return "redirect:/main/" + bcID + "/floors";
     }
@@ -220,7 +218,7 @@ public class MainController {
         model.addAttribute("placements", placementDAO.getAllforOneFloor(floorID));
         model.addAttribute("floorNumber", floorDAO.get(floorID).getFloorNumber());
         setPresentUser(model);
-        return "main/placement/placements";
+        return "placement/placements";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
@@ -230,30 +228,50 @@ public class MainController {
         model.addAttribute("placement", new Placement());
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
-        return "main/placement/newPlacement";
+        return "placement/newPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
     @GetMapping("{bcID}/floors/{floorID}/placements/{plID}/rent")
     public String getPlacementRentPage(@PathVariable("plID") int plID, @PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, Model model) {
         setPresentUser(model);
-        model.addAttribute("rentedPlacement", new RentedPlacement());
+        model.addAttribute("requestToBcLink", new RequestToBcLink());
         model.addAttribute("plID", plID);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
-        return "main/placement/rentPlacement";
+        model.addAttribute("areDatesCorrect", true);
+        return "main/rentPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
     @PostMapping("{bcID}/floors/{floorID}/placements/{plID}/rent")
-    public String createRentPlacement(@PathVariable("plID") int plID, @PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @ModelAttribute("rentedPlacement") RentedPlacement rentedPlacement, Model model) {
-        setPresentUser(model);
-        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        rentedPlacement.setPlacementId(plID);
-        rentedPlacement.setRenterId(securityUser.getId());
-        rentedPlacementDAO.insert(rentedPlacement);
-        model.addAttribute("bcID", bcID);
-        model.addAttribute("floorID", floorID);
+    public String createRentPlacement(Model model, @PathVariable("plID") int plID, @PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @RequestParam String startOfRent, @RequestParam String endOfRent) {
+
+        try {
+            RequestToBcLink requestToBcLink = new RequestToBcLink();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+            Date dateStartOfRent = simpleDateFormat.parse(startOfRent);
+            Date dateEndOfRent = simpleDateFormat.parse(endOfRent);
+            if(dateEndOfRent.before(dateStartOfRent)){
+                model.addAttribute("areDatesCorrect", false);
+                return "main/rentPlacement";
+            }
+            SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MONTH,1);
+            requestToBcLink.setStartOfRent(dateStartOfRent);
+            requestToBcLink.setEndOfRent(dateEndOfRent);
+            requestToBcLink.setExpirationDate(new Date(calendar.getTimeInMillis()));
+            requestToBcLink.setRenterId(securityUser.getId());
+            requestToBcLink.setPlacementId(plID);
+            requestToBcLinkDAO.insert(requestToBcLink);
+            model.addAttribute("bcID", bcID);
+            model.addAttribute("floorID", floorID);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
     }
 
@@ -261,7 +279,6 @@ public class MainController {
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/placements/new")
     public String createPlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @ModelAttribute("placement") Placement placement, Model model) {
-        setPresentUser(model);
         placement.setFloorId(floorID);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
@@ -272,7 +289,6 @@ public class MainController {
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/placements/{plID}/del")
     public String deletePlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @PathVariable("plID") int plID, Model model) {
-        setPresentUser(model);
         placementDAO.delete(plID);
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
     }

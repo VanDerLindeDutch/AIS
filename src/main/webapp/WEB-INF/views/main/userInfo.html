@@ -8,27 +8,8 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/start">AIS FSPO</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+<nav th:replace="fragments/navbar:: navbar"></nav>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
-            </li>
-            <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
-                <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
-            </li>
-        </ul>
-    </div>
-    <div style="position: absolute; right: 10%;">
-        <a href="/start" class="nav-link">ВЫЙТИ</a>
-    </div>
-</nav>
 <div th:class="bcLink">
     <span class="info"> Логин - </span>
     <span class="info" th:text="${bcLink.getLogin()}"></span>

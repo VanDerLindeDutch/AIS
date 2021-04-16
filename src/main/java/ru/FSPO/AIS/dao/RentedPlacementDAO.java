@@ -19,7 +19,7 @@ public class RentedPlacementDAO {
     }
 
     public void insert(RentedPlacement rentedPlacement){
-        jdbcTemplate.update("INSERT INTO rented_placement (rent, start_of_rent, end_of_rent, placement_id, renter_id) VALUES (?, ?, ?, ?, ?)", rentedPlacement.getRent(), rentedPlacement.getStartOfRent(), rentedPlacement.getEndOfRent(), rentedPlacement.getPlacementId(), rentedPlacement.getRenterId() );
+        jdbcTemplate.update("INSERT INTO rented_placement (total_amount, start_of_rent, end_of_rent, placement_id, renter_id) VALUES (?, ?, ?, ?, ?)", rentedPlacement.getRent(), rentedPlacement.getStartOfRent(), rentedPlacement.getEndOfRent(), rentedPlacement.getPlacementId(), rentedPlacement.getRenterId() );
     }
 
     public List<RentedPlacement> getAllForUser(int renterID){

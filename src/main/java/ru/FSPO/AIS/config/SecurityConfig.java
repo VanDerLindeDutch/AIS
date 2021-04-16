@@ -46,7 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                     .requestMatcher(new AntPathRequestMatcher("/**"))
                     .authorizeRequests()
-                    .antMatchers("/start", "/renter/register", "/resources/**")
+                    .antMatchers("/resources/database.properties")
+                    .denyAll()
+                    .antMatchers("/start", "/renter/register", "/resources/**", "/resources/landlord/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
@@ -56,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                     .formLogin()
                     .loginPage("/renter/login")
-                    .loginProcessingUrl("/renter/login")
+                    .loginProcessingUrl("/renter/login/process")
                     .permitAll()
                     .defaultSuccessUrl("/main")
                     // logout

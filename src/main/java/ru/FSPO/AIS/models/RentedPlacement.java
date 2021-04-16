@@ -1,12 +1,14 @@
 package ru.FSPO.AIS.models;
 
 
+import java.sql.Date;
+
 public class RentedPlacement {
 
   private long rPlacementId;
   private long rent;
-  private java.sql.Date startOfRent;
-  private java.sql.Date endOfRent;
+  private Date startOfRent;
+  private Date endOfRent;
   private long placementId;
   private long renterId;
 

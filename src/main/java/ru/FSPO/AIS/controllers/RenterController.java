@@ -26,10 +26,10 @@ public class RenterController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model) {
-        model.addAttribute("renterLink", new RenterLink());
+    public String getLoginPage() {
         return "renter/login";
     }
+
    /* @PostMapping("/login")
     public String login(@ModelAttribute("renterLink") RenterLink renterLink, Model model){
         renterLink =renterLinkDao.login(renterLink);

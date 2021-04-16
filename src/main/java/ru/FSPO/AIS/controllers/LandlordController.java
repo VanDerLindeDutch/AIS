@@ -25,8 +25,7 @@ public class LandlordController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model) {
-//        model.addAttribute("bcLink", new BcLink());
+    public String getLoginPage() {
         return "landlord/login";
     }
 

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.FSPO.AIS.dao.BcLinkDAO;
 import ru.FSPO.AIS.models.BcLink;
 
+import java.security.Principal;
+
 @Service("landlordDetailsServiceImpl")
 public class LandlordDetailsServiceImpl implements UserDetailsService {
 
