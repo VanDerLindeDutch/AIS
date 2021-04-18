@@ -19,6 +19,7 @@ public class RequestToBcLinkMapper implements RowMapper<RequestToBcLink> {
         request.setRenterId(resultSet.getInt("renter_id"));
         request.setStartOfRent(resultSet.getDate("start_of_rent"));
         request.setEndOfRent(resultSet.getDate("end_of_rent"));
+        request.setCheked(resultSet.getBoolean("is_checked"));
         return request;
     }
 }

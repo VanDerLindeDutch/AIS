@@ -1,12 +1,12 @@
 package ru.FSPO.AIS.models;
 
 
-import java.sql.Date;
+import java.util.Date;
 
 public class RentedPlacement {
 
   private long rPlacementId;
-  private long rent;
+  private long totalAmount;
   private Date startOfRent;
   private Date endOfRent;
   private long placementId;
@@ -22,32 +22,30 @@ public class RentedPlacement {
   }
 
 
-  public long getRent() {
-    return rent;
+  public long getTotalAmount() {
+    return totalAmount;
   }
 
-  public void setRent(long rent) {
-    this.rent = rent;
+  public void setTotalAmount(long totalAmount) {
+    this.totalAmount = totalAmount;
   }
 
 
-  public java.sql.Date getStartOfRent() {
+  public Date getStartOfRent() {
     return startOfRent;
   }
 
-  public void setStartOfRent(java.sql.Date startOfRent) {
+  public void setStartOfRent(Date startOfRent) {
     this.startOfRent = startOfRent;
   }
 
-
-  public java.sql.Date getEndOfRent() {
+  public Date getEndOfRent() {
     return endOfRent;
   }
 
-  public void setEndOfRent(java.sql.Date endOfRent) {
+  public void setEndOfRent(Date endOfRent) {
     this.endOfRent = endOfRent;
   }
-
 
   public long getPlacementId() {
     return placementId;
@@ -66,4 +64,15 @@ public class RentedPlacement {
     this.renterId = renterId;
   }
 
+  @Override
+  public String toString() {
+    return "RentedPlacement{" +
+            "rPlacementId=" + rPlacementId +
+            ", totalAmount=" + totalAmount +
+            ", startOfRent=" + startOfRent +
+            ", endOfRent=" + endOfRent +
+            ", placementId=" + placementId +
+            ", renterId=" + renterId +
+            '}';
+  }
 }

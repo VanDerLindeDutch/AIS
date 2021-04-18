@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Requests</title>
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
+    <link rel="stylesheet" th:href="@{/resources/main.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="fragments/navbar:: navbar"></nav>
+<div class="container" >
+    <div class="row">
+        <div class="col-12">
+            <table class="table" style="position:relative; margin:0;padding:0; width:70vw; left:-22%">
+                <thead>
+                <tr>
+                    <th style=" width: 200px" class="content" scope="col">Фото помещения</th>
+                    <th class="content" scope="col">Полная указанная стоимость</th>
+                    <th class="content" scope="col">Дата окончания срока запроса </th>
+                    <th class="content" scope="col">Дата начала аренды</th>
+                    <th class="content" scope="col">Дата конца аренды</th>
+                    <th class="content" scope="col">Рента</th>
+                    <th class="content" scope="col">Перейти</th>
+                    <th class="content" scope="col">Отклонить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${map}">
+                    <td style="display:inline-block;width: 400px">
+                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${entry.key.getImagePath()})}"
+                             class=" img-thumbnail" alt="Sheep">
+                    </td>
+                    <td class="content"  th:text="${entry.value.getTotalAmount()}"></td>
+                    <td class="content"  th:text="${entry.value.getExpirationDate()}"></td>
+                    <td class="content"  th:text="${entry.value.getStartOfRent()}"></td>
+                    <td class="content"  th:text="${entry.value.getEndOfRent()}"></td>
+                    <td class="content"  th:text="${entry.key.getPrice()}"></td>
+                    <td>
+                        <a class="btn btn-primary" th:href="@{/main/requests/{id}(id=${entry.value.getRequestId()})}">Перейти</a>
+                    </td>
+                    <td>
+                        <form th:action="@{/main/requests/drop/{id}(id=${entry.value.getRequestId()})}" th:method="POST">
+                            <button type="submit" class="btn btn-danger" >Отклонить</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

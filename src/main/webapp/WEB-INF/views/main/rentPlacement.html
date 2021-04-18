@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" th:href="@{/resources/landlord/login.css}">
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -14,22 +15,28 @@
     <form th:action="@{/main/{id}/floors/{fID}/placements/{placeID}/rent(id=${bcID}, fID=${floorID}, placeID=${plID})}" th:method="POST" enctype="multipart/form-data">
         <h2 class="text-center">Арендовать помещение</h2>
         <div class="form-group">
-            <input name="startOfRent" type="month" class="form-control" placeholder="Начало аренды" required="required">
+            <input id="startOfRent" name="startOfRent" type="month" class="form-control" placeholder="Начало аренды" required="required">
             <!--<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-primary" role="alert">
             </div>-->
         </div>
         <div class="form-group">
-            <input name="endOfRent" type="month" class="form-control" placeholder="Окончание аренды" required="required">
+            <input id="endOfRent" name="endOfRent" type="month" class="form-control" placeholder="Окончание аренды" required="required">
             <!--<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-primary" role="alert">
             </div>-->
         </div>
+        <span class="finalAmount"> Цена:</span>
+        <span id="amount"></span>
+        <span class="finalAmount">руб.</span>
         <div th:if="${areDatesCorrect==false}" class="alert alert-primary" role="alert">
             Окончание аренды должно быть позже начала
         </div>
         <div class="form-group regBut">
             <button type="submit" class="btn btn-primary btn-block">Добавить помещение</button>
         </div>
+        <div id ="price" th:text="${price}" style="display: none">
+        </div>
     </form>
+    <script th:src="@{/resources/main/rentPlacement.js}"></script>
 </div>
 
 

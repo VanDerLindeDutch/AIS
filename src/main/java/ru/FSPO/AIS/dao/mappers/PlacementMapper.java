@@ -15,6 +15,7 @@ public class PlacementMapper implements RowMapper<Placement> {
         placement.setFloorId(resultSet.getInt("floor_id"));
         placement.setPrice(resultSet.getInt("price"));
         placement.setSurface(resultSet.getInt("surface"));
+        placement.setImagePath(resultSet.getString("image_path"));
         return placement;
     }
 }

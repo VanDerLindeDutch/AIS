@@ -22,7 +22,7 @@
         <a href="/start" class="btn btn-secondary"> Назад</a>
     </form>
 </div>
-<div id="error" role="alert" class="alert alert-primary" th:if="${isCorrect == false}">Логин или пароль введены неверно. Попробуйте ещё раз.</div>
+<div id="error" role="alert" class="alert alert-primary" th:if="${#httpServletRequest.getParameter('error') != null}">Логин или пароль введены неверно. Попробуйте ещё раз.</div>
 
 </body>
 </html>

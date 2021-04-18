@@ -12,6 +12,8 @@ public class RequestToBcLink {
   private long renterId;
   private Date startOfRent;
   private Date endOfRent;
+  private boolean isCheked;
+  private long totalAmount;
 
   public long getRequestId() {
     return requestId;
@@ -65,6 +67,24 @@ public class RequestToBcLink {
     this.endOfRent = endOfRent;
   }
 
+
+  public boolean isCheked() {
+    return isCheked;
+  }
+
+  public void setCheked(boolean cheked) {
+    isCheked = cheked;
+  }
+
+  public long getTotalAmount() {
+    return totalAmount;
+  }
+
+  public void setTotalAmount(long totalAmount) {
+    this.totalAmount = totalAmount;
+  }
+
+
   @Override
   public String toString() {
     return "RequestToBcLink{" +
@@ -74,6 +94,8 @@ public class RequestToBcLink {
             ", renterId=" + renterId +
             ", startOfRent=" + startOfRent +
             ", endOfRent=" + endOfRent +
+            ", isCheked=" + isCheked +
+            ", totalAmount=" + totalAmount +
             '}';
   }
 }

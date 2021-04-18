@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/resources/database.properties")
                     .denyAll()
-                    .antMatchers("/start", "/renter/register", "/resources/**", "/resources/landlord/**")
+                    .antMatchers("/start", "/renter/**", "/resources/**", "/resources/landlord/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
@@ -57,9 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
 
                     .formLogin()
-                    .loginPage("/renter/login")
-                    .loginProcessingUrl("/renter/login/process")
-                    .permitAll()
+                    .loginPage("/renter/login").permitAll()
+                    .failureUrl("/renter/login?error=true")
+
                     .defaultSuccessUrl("/main")
                     // logout
                     .and()
@@ -106,6 +106,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .requestMatcher(new AntPathRequestMatcher("/landlord/**"))
                     .authorizeRequests()
+                    .antMatchers("/landlord/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
 
@@ -116,6 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/landlord/login").permitAll()
                     .loginProcessingUrl("/landlord/login")
                     .defaultSuccessUrl("/main")
+                    .failureUrl("/landlord/login?error=true")
                     // logout
                     .and()
                     .logout()

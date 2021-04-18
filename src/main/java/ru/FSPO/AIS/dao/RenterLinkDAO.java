@@ -34,6 +34,10 @@ public class RenterLinkDAO {
         jdbcTemplate.update("INSERT INTO renter_link (first_name, birth_date, login, password, email)  VALUES  ( ?, ?, ?, ?, ?)", renterLink.getFirstName(), renterLink.getBirthDate(), renterLink.getLogin(), renterLink.getPassword(), renterLink.getEmail());
     }
 
+    public RenterLink getById(int id){
+        return jdbcTemplate.query("SELECT * FROM renter_link WHERE renter_id = ?", new Object[]{id}, new RenterLinkMapper()).stream().findAny().orElse(null);
+    }
+
     public RenterLink login(RenterLink renterLink) {
         return jdbcTemplate.query("SELECT * FROM renter_link WHERE login = ? and password = ?", new Object[]{renterLink.getLogin(), renterLink.getPassword()}, new RenterLinkMapper()).stream().findAny().orElse(null);
     }

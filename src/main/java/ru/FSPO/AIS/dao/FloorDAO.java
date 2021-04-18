@@ -25,7 +25,7 @@ public class FloorDAO {
         return jdbcTemplate.query("SELECT * FROM floor WHERE bc_id = ?",new Object[]{bcID}, new FloorMapper());
     }
 
-    public void delete(int floorId){
+    public void delete(int floorId) throws Exception{
         jdbcTemplate.update("DELETE FROM floor WHERE floor_id = ?", new Object[]{floorId});
     }
 

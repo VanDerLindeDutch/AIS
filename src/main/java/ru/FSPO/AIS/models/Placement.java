@@ -7,6 +7,7 @@ public class Placement {
   private long surface;
   private long price;
   private long floorId;
+  private String imagePath;
 
 
   public long getPlacementId() {
@@ -44,6 +45,14 @@ public class Placement {
     this.floorId = floorId;
   }
 
+  public String getImagePath() {
+    return imagePath;
+  }
+
+  public void setImagePath(String imagePath) {
+    this.imagePath = imagePath;
+  }
+
   @Override
   public String toString() {
     return "Placement{" +
@@ -51,6 +60,7 @@ public class Placement {
             ", surface=" + surface +
             ", price=" + price +
             ", floorId=" + floorId +
+            ", imagePath='" + imagePath + '\'' +
             '}';
   }
 }

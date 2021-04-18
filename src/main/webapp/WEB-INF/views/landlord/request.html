@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
+    <link rel="stylesheet" th:href="@{/resources/main.css}">
+    <link rel="stylesheet" th:href="@{/resources/landlord/login.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="fragments/navbar:: navbar"></nav>
+<span class="bc_content">Финальная стоимость-</span>
+<span class="content bc_content"  th:text="${requestToBcLink.getTotalAmount()}"></span>
+<br>
+<span class="bc_content">Дата окончания срока запроса-</span>
+<span class="content bc_content"  th:text="${requestToBcLink.getExpirationDate()}"></span>
+<br>
+<span class="bc_content">Дата начала аренды-</span>
+<span class="content bc_content"  th:text="${requestToBcLink.getStartOfRent()}"></span>
+<br>
+<span class="bc_content">Дата окончания аренды-</span>
+<span class="content bc_content"  th:text="${requestToBcLink.getEndOfRent()}"></span>
+<br>
+<span class="bc_content">Email для связи-</span>
+<span class="content bc_content"  th:text="${renter.getEmail()}"></span>
+<br>
+<span class="bc_content">Имя-</span>
+<span class="content bc_content"  th:text="${renter.getFirstName()}"></span>
+<br>
+<form th:action="@{/main/request/{id}(id=${rID})}" th:method="POST">
+    <div class="form-group regBut">
+        <button type="submit" class="btn btn-primary btn-block">Подтвердить ареду</button>
+    </div>
+</form>
+</body>
+</html>

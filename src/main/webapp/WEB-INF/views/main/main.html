@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
-    <link rel="stylesheet" href="../../resources/main.css">
-    <link rel="stylesheet" href="../../resources/show.css">
+    <link rel="stylesheet" th:href="@{/resources/main.css}">
+    <link rel="stylesheet" th:href="@{/resources/show.css}">
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <nav th:replace="fragments/navbar:: navbar"></nav>
-
 <div class="container" >
     <div class="row">
         <div class="col-12">
-            <table class="table table-image" style="position:relative; margin:0;padding:0; left:-10%; width:70vw">
+            <table class="table" style="position:relative; margin:0;padding:0; width:70vw; left:-22%">
                 <thead>
                 <tr>
-                    <th class="content" scope="col">Фото</th>
+                    <th style=" width: 200px" class="content" scope="col">Фото</th>
                     <th class="content" scope="col">Адрес</th>
                     <th class="content" scope="col">Полное наименование</th>
                     <th class="content" scope="col">Название</th>
@@ -26,9 +26,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="BC : ${centers}">
-                    <td class="w-25">
-                        <img th:src="@{/resources/uploads/{ref}(ref=${BC.getImagePath()})}"
-                             class="img-fluid img-thumbnail" alt="Sheep">
+                    <td style="display:inline-block;width: 400px">
+                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/uploads/{ref}(ref=${BC.getImagePath()})}"
+                             class=" img-thumbnail" alt="Sheep">
                     </td>
                     <td class="content"  th:text="${BC.getAddress()}"></td>
                     <td class="content" th:text="${BC.getName()}"></td>
@@ -42,6 +42,12 @@
         </div>
     </div>
 </div>
+
+
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
 </body>
 </html>

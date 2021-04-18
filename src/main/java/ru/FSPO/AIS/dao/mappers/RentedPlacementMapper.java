@@ -5,17 +5,13 @@ import ru.FSPO.AIS.models.RentedPlacement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RentedPlacementMapper implements RowMapper<RentedPlacement> {
     @Override
     public RentedPlacement mapRow(ResultSet resultSet, int i) throws SQLException {
         RentedPlacement rentedPlacement = new RentedPlacement();
         rentedPlacement.setRPlacementId(resultSet.getInt("r_placement_id"));
-        rentedPlacement.setRent(resultSet.getInt("total_amount"));
+        rentedPlacement.setTotalAmount(resultSet.getInt("total_amount"));
         rentedPlacement.setPlacementId(resultSet.getInt("placement_id"));
         rentedPlacement.setRenterId(resultSet.getInt("renter_id"));
         rentedPlacement.setStartOfRent(resultSet.getDate("start_of_rent"));

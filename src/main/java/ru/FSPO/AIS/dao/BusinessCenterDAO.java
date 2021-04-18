@@ -33,7 +33,7 @@ public class BusinessCenterDAO {
         jdbcTemplate.update("UPDATE business_center SET name = ?, short_name = ?, address = ?, imagePath = ? WHERE bc_id=?", businessCenter.getName(), businessCenter.getShortName(), businessCenter.getAddress(), businessCenter.getImagePath(), id);
     }
 
-    public void drop(int id){
+    public void drop(int id) throws Exception{
         jdbcTemplate.update("DELETE FROM business_center WHERE bc_id=?", new Object[]{id});
     }
 }
