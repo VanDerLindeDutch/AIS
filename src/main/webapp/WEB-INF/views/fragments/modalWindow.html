@@ -21,11 +21,11 @@
             </div>
             <div  class="modal-body">
                 <span th:each="rPlacement: ${rentedPlacements}">
-                    <span th:if="${rPlacement.getPlacementId()==place.getPlacementId()}">
+                    <span th:if="${rPlacement.getPlacementId()==place.key.getPlacementId()}">
                     <span class="startDate" th:text="${rPlacement.getStartOfRent()}" >
                     </span>
                     <br>
-                    <span class="endDate" th:text="${rPlacement.getEndOfRent()}" th:if="${rPlacement.getPlacementId()==place.getPlacementId()}"></span>
+                    <span class="endDate" th:text="${rPlacement.getEndOfRent()}" th:if="${rPlacement.getPlacementId()==place.key.getPlacementId()}"></span>
                     </span>
                 </span>
             </div>

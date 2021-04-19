@@ -1,6 +1,8 @@
 package ru.FSPO.AIS.models;
 
 
+import java.util.Objects;
+
 public class Placement {
 
   private long placementId;
@@ -62,5 +64,18 @@ public class Placement {
             ", floorId=" + floorId +
             ", imagePath='" + imagePath + '\'' +
             '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Placement placement = (Placement) o;
+    return placementId == placement.placementId;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(placementId);
   }
 }

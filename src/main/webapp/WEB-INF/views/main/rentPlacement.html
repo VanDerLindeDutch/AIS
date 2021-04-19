@@ -12,7 +12,7 @@
 <nav th:replace="fragments/navbar:: navbar"></nav>
 
 <div class="login-form">
-    <form th:action="@{/main/{id}/floors/{fID}/placements/{placeID}/rent(id=${bcID}, fID=${floorID}, placeID=${plID})}" th:method="POST" enctype="multipart/form-data">
+    <form th:action="@{/main/placements/{placeID}/rent(placeID=${plID})}" th:method="POST" enctype="multipart/form-data">
         <h2 class="text-center">Арендовать помещение</h2>
         <div class="form-group">
             <input id="startOfRent" name="startOfRent" type="month" class="form-control" placeholder="Начало аренды" required="required">

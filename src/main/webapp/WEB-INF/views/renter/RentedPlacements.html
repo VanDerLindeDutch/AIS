@@ -9,46 +9,25 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/start">AIS FSPO</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main(USERTYPE=${USERTYPE},ID=${ID})}">Показать БЦ <span class="sr-only">(current)</span></a>
-            </li>
-            <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
-                <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
-            </li>
-            <li th:if="${USERTYPE=='RENTER'}" class="nav-item">
-                <a class="nav-link" th:href="${'/main/renter/'+{ID}+'/rentedPlacements'}">Показать аренд. помещ.</a>
-            </li>
-        </ul>
-    </div>
-    <div style="position: absolute; right: 10%;">
-        <a href="/start" class="nav-link">ВЫЙТИ</a>
-    </div>
-</nav>
+<nav th:replace="fragments/navbar:: navbar"></nav>
 <div class="container" >
     <div class="row">
         <div class="col-12">
             <table class="table table-image">
                 <thead>
                 <tr>
-                    <th class="content" scope="col">Рента</th>
+                    <th class="content" scope="col">Полная стоимость</th>
+                    <th class="content" scope="col">Ежемесячные платежи</th>
                     <th class="content" scope="col">Начало аренды</th>
                     <th class="content" scope="col">Конец аренды</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="rPL : ${rentedPlacements}">
-                    <td class="content" th:text="${rPL.getRent()}"></td>
-                    <td class="content" th:text="${rPL.getStartOfRent()}"></td>
-                    <td class="content" th:text="${rPL.getEndOfRent()}"></td>
+                <tr th:each="rPL : ${map}">
+                    <td class="content" th:text="${rPL.value.getTotalAmount()}"></td>
+                    <td class="content" th:text="${rPL.key.getPrice()}"></td>
+                    <td class="content" th:text="${rPL.value.getStartOfRent()}"></td>
+                    <td class="content" th:text="${rPL.value.getEndOfRent()}"></td>
 <!--                    <td>-->
 <!--                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>-->
 <!--                    </td>-->

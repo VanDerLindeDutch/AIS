@@ -1,13 +1,17 @@
 package ru.FSPO.AIS.dao;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.FSPO.AIS.dao.mappers.RentedPlacementMapper;
 import ru.FSPO.AIS.dao.mappers.RequestToBcLinkMapper;
 import ru.FSPO.AIS.models.RentedPlacement;
 import ru.FSPO.AIS.models.RequestToBcLink;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +20,16 @@ public class RequestToBcLinkDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public RequestToBcLinkDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<RequestToBcLink> getAll(){
-        return jdbcTemplate.query("SELECT * FROM request_to_bc_link", new RequestToBcLinkMapper());
+    public List<Long> getAll(){
+        return jdbcTemplate.query("SELECT r.placement_id as pl_id FROM request_to_bc_link r JOIN placement p ON r.placement_id = p.placement_id", (resultSet, i) -> resultSet.getLong(1));
     }
+
+
 
     public void insert(RequestToBcLink request){
         jdbcTemplate.update("INSERT INTO request_to_bc_link(placement_id, expiration_date, renter_id, start_of_rent, end_of_rent, is_checked) VALUES (?,?,?,?,?,?)", request.getPlacementId(), request.getExpirationDate(), request.getRenterId(), request.getStartOfRent(), request.getEndOfRent(), request.isCheked());

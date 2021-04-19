@@ -39,9 +39,10 @@ public class MainController {
     private final RentedPlacementDAO rentedPlacementDAO;
     private final RequestToBcLinkDAO requestToBcLinkDAO;
     private final RenterLinkDAO renterLinkDAO;
+    private final ServiceDAO serviceDAO;
 
     @Autowired
-    public MainController(BcLinkDAO bcLinkDAO, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO) {
+    public MainController(BcLinkDAO bcLinkDAO, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO, ServiceDAO serviceDAO) {
         this.bcLinkDAO = bcLinkDAO;
         this.businessCenterDAO = businessCenterDAO;
         this.floorDAO = floorDAO;
@@ -49,6 +50,7 @@ public class MainController {
         this.rentedPlacementDAO = rentedPlacementDAO;
         this.requestToBcLinkDAO = requestToBcLinkDAO;
         this.renterLinkDAO = renterLinkDAO;
+        this.serviceDAO = serviceDAO;
     }
 
 
@@ -93,10 +95,10 @@ public class MainController {
         SortedSet<Map.Entry<Placement, RequestToBcLink>> sortedSet = new TreeSet<>(new Comparator<Map.Entry<Placement, RequestToBcLink>>() {
             @Override
             public int compare(Map.Entry<Placement, RequestToBcLink> o1, Map.Entry<Placement, RequestToBcLink> o2) {
-                if(o1.getValue().getTotalAmount()== o2.getValue().getTotalAmount()){
+                if (o1.getValue().getTotalAmount() == o2.getValue().getTotalAmount()) {
                     return 0;
                 }
-                return o1.getValue().getTotalAmount()> o2.getValue().getTotalAmount()?-1:1;
+                return o1.getValue().getTotalAmount() > o2.getValue().getTotalAmount() ? -1 : 1;
             }
         });
         sortedSet.addAll(map.entrySet());
@@ -137,7 +139,7 @@ public class MainController {
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("/requests/drop/{id}")
-    public String dropRequest(@PathVariable("id") int id){
+    public String dropRequest(@PathVariable("id") int id) {
         requestToBcLinkDAO.delete(id);
         return "redirect:/main/requests";
     }
@@ -145,7 +147,24 @@ public class MainController {
     @GetMapping("/renter/{rID}/rentedPlacements")
     public String getRentedPlacements(@PathVariable("rID") int rID, Model model) {
         setPresentUser(model);
-        model.addAttribute("rentedPlacements", rentedPlacementDAO.getAllForUser(rID));
+        List<RentedPlacement> rentedPlacements = rentedPlacementDAO.getAllForUser(rID);
+        List<Placement> placements = placementDAO.getJoinPlacements(rID);
+        rentedPlacements.sort((o1, o2) -> {
+            if (o1.getPlacementId() == o2.getPlacementId()) {
+                return 0;
+            }
+            return o1.getPlacementId() > o2.getPlacementId() ? 1 : -1;
+        });
+
+        placements.sort((o1, o2) -> {
+            if (o1.getPlacementId() == o2.getPlacementId()) {
+                return 0;
+            }
+            return o1.getPlacementId() > o2.getPlacementId() ? 1 : -1;
+        });
+
+        Map<Placement, RentedPlacement> map = IntStream.range(0, placements.size()).boxed().collect(Collectors.toMap(placements::get, rentedPlacements::get));
+        model.addAttribute("map", map);
         return "renter/RentedPlacements";
     }
 
@@ -216,7 +235,7 @@ public class MainController {
         try {
             businessCenterDAO.drop(bcId);
         } catch (Exception exception) {
-            return "redirect:/main/"+bcId+"/floors";
+            return "redirect:/main/" + bcId + "/floors";
         }
         return "redirect:/main";
     }
@@ -273,7 +292,7 @@ public class MainController {
         try {
             floorDAO.delete(floorId);
         } catch (Exception exception) {
-            return "redirect:/main/" + bcID + "/floors/"+floorId+"/placements";
+            return "redirect:/main/" + bcID + "/floors/" + floorId + "/placements";
         }
         return "redirect:/main/" + bcID + "/floors";
     }
@@ -288,14 +307,28 @@ public class MainController {
             List<Long> requestedPlacementID = requestToBcLinkDAO.getRequestsJoinPlacements(userId, floorID).stream().map(RequestToBcLink::getPlacementId).collect(Collectors.toList());
             model.addAttribute("requestedPlacementsID", requestedPlacementID);
         }
-
         List<RentedPlacement> rentedPlacements = rentedPlacementDAO.getForFloor(floorID);
+
+        List<Map<String, Object>> list = serviceDAO.getAllForFloor(floorID);
+        Map<Placement, List<Service>> placementServices = placements.
+                stream()
+                .collect(Collectors.toMap(x->x,
+                y->new ArrayList<>()));
+        for(Map map:list){
+            Stream.ofNullable(placementServices)
+                    .flatMap(x->x.entrySet().stream())
+                    .filter(x->x.getKey().getPlacementId()==((Number) map.get("placement_id")).longValue())
+                    .findFirst()
+                    .get()
+                    .getValue()
+                    .add(new Service(((Number) map.get("service_id")).longValue(), (String) map.get("description"))) ;
+        }
         model.addAttribute("rentedPlacementsID", rentedPlacements.stream().map(RentedPlacement::getPlacementId).collect(Collectors.toList()));
         model.addAttribute("rentedPlacements", rentedPlacements);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
         model.addAttribute("isCurrentUser", businessCenterDAO.get(bcID).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
-        model.addAttribute("placements", placements);
+        model.addAttribute("placements", placementServices);
         model.addAttribute("floorNumber", floorDAO.get(floorID).getFloorNumber());
         setPresentUser(model);
         return "placement/placements";
@@ -307,26 +340,25 @@ public class MainController {
         setPresentUser(model);
         model.addAttribute("placement", new Placement());
         model.addAttribute("bcID", bcID);
+        model.addAttribute("services", serviceDAO.getAll());
         model.addAttribute("floorID", floorID);
         return "placement/newPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
-    @GetMapping("{bcID}/floors/{floorID}/placements/{plID}/rent")
-    public String getPlacementRentPage(@PathVariable("plID") int plID, @PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, Model model) {
+    @GetMapping("placements/{plID}/rent")
+    public String getPlacementRentPage(@PathVariable("plID") int plID, Model model) {
         setPresentUser(model);
         model.addAttribute("requestToBcLink", new RequestToBcLink());
         model.addAttribute("plID", plID);
-        model.addAttribute("bcID", bcID);
-        model.addAttribute("floorID", floorID);
         model.addAttribute("price", placementDAO.get(plID).getPrice());
         model.addAttribute("areDatesCorrect", true);
         return "main/rentPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
-    @PostMapping("{bcID}/floors/{floorID}/placements/{plID}/rent")
-    public String createRentPlacement(Model model, @PathVariable("plID") int plID, @PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @RequestParam String startOfRent, @RequestParam String endOfRent) {
+    @PostMapping("placements/{plID}/rent")
+    public String createRentPlacement(Model model, @PathVariable("plID") int plID, @RequestParam String startOfRent, @RequestParam String endOfRent) {
 
         try {
             RequestToBcLink requestToBcLink = new RequestToBcLink();
@@ -346,20 +378,18 @@ public class MainController {
             requestToBcLink.setRenterId(securityUser.getId());
             requestToBcLink.setPlacementId(plID);
             requestToBcLinkDAO.insert(requestToBcLink);
-            model.addAttribute("bcID", bcID);
-            model.addAttribute("floorID", floorID);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
-        return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
+        return "redirect:/main";
     }
 
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/placements/new")
-    public String createPlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @ModelAttribute("placement") Placement placement, Model model, @RequestParam MultipartFile file) {
+    public String createPlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @ModelAttribute("placement") Placement placement, Model model, @RequestParam(name = "checkbox", required = false) String string, @RequestParam MultipartFile file) {
         placement.setFloorId(floorID);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
@@ -369,7 +399,12 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        placementDAO.insert(placement);
+        int plId = placementDAO.insert(placement);
+        if (string != null) {
+            List<Integer> list = Arrays.stream(string.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            list.forEach(x -> serviceDAO.insertServiceToPlacement(plId, x));
+        }
+
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
     }
 
@@ -378,6 +413,33 @@ public class MainController {
     public String deletePlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @PathVariable("plID") int plID, Model model) {
         placementDAO.delete(plID);
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
+    }
+
+
+    @GetMapping("/servPlacements")
+    public String getServicesPlacementsPage(Model model){
+        setPresentUser(model);
+        model.addAttribute("services", serviceDAO.getAll());
+        return "main/placementsServices";
+    }
+
+    @PostMapping("/servPlacements")
+    public String group(Model model,  @RequestParam(name = "checkbox", required = false) String string){
+        setPresentUser(model);
+        model.addAttribute("services", serviceDAO.getAll());
+        if (string != null) {
+
+            Map<Placement, List<Service>> placements = placementDAO.getJoinServices(Arrays.stream(string.split(","))
+                            .map(Integer::parseInt).toArray(Integer[]::new));
+            System.out.println(placements);
+            model.addAttribute("placements", placements);
+            model.addAttribute("requestedPlacementsID", requestToBcLinkDAO.getAll());
+            model.addAttribute("rentedPlacements", rentedPlacementDAO.getAll());
+            System.out.println(requestToBcLinkDAO.getAll());
+            System.out.println(rentedPlacementDAO.getAllJoinPlacement());
+            model.addAttribute("rentedPlacementsID", rentedPlacementDAO.getAllJoinPlacement());
+        }
+        return "main/placementsServices";
     }
 
 }
