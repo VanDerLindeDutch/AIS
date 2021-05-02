@@ -7,8 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -17,22 +23,26 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
 
 @ComponentScan("ru.FSPO.AIS")
-@PropertySource("classpath:database.properties")
+//@PropertySource("classpath:database.properties")
 @EnableWebMvc
+@EnableJpaRepositories(basePackages = {"ru.FSPO.AIS.newdao"})
 public class SpringConfig implements WebMvcConfigurer {
 
 
-    @Value("${database.URL}")
-    private String URL;
-    @Value("${database.USERNAME}")
-    private String USERNAME;
-    @Value("${database.PASSWORD}")
-    private String PASSWORD;
+//    @Value("${database.URL}")
+    private String URL = "jdbc:mysql://localhost:3306/ais_mark1?useUnicode=yes&characterEncoding=UTF-8";
+//    @Value("${database.USERNAME}")
+    private String USERNAME = "root";
+//    @Value("${database.PASSWORD}")
+    private String PASSWORD = "0000";
+
+
 
 
     private final ApplicationContext applicationContext;
@@ -41,6 +51,27 @@ public class SpringConfig implements WebMvcConfigurer {
     @Autowired
     public SpringConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setDataSource(dataSource());
+        return factory;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory);
+        return txManager;
     }
 
     @Bean
