@@ -6,3 +6,4 @@ package-lock.json
 /src/main/webapp/resources/photos/floorsPhotos/*
 /src/main/webapp/resources/photos/uploads/*
 /src/main/webapp/resources/photos/placementsPhotos/*
+!/**/.gitkeep
