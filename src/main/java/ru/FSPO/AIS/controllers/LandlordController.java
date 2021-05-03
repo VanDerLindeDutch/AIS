@@ -9,20 +9,22 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.FSPO.AIS.config.SecurityConfig;
-import ru.FSPO.AIS.dao.BcLinkDAO;
-import ru.FSPO.AIS.dao.UserType;
-import ru.FSPO.AIS.models.BcLink;
+import ru.FSPO.AIS.newdao.BcLinkRepository;
+import ru.FSPO.AIS.newmodels.BcLink;
+
 
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/landlord")
 public class LandlordController {
-    private final BcLinkDAO bcLinkDAO;
+
+
+    private final BcLinkRepository bcLinkRepository;
 
     @Autowired
-    public LandlordController(BcLinkDAO bcLinkDAO) {
-        this.bcLinkDAO = bcLinkDAO;
+    public LandlordController(BcLinkRepository bcLinkRepository) {
+        this.bcLinkRepository = bcLinkRepository;
     }
 
     @GetMapping("/login")
@@ -40,11 +42,11 @@ public class LandlordController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute("bcLink") @Valid BcLink bcLink, BindingResult bindingResult) {
-        bcLink.setPassword(SecurityConfig.passwordEncoder().encode(bcLink.getPassword()));
         if (bindingResult.hasErrors()) {
             return "landlord/register";
         }
-        bcLinkDAO.insert(bcLink);
+        bcLink.setPassword(SecurityConfig.passwordEncoder().encode(bcLink.getPassword()));
+        bcLinkRepository.save(bcLink);
         return "redirect:/start";
     }
 

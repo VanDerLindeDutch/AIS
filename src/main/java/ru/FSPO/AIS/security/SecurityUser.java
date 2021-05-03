@@ -3,8 +3,8 @@ package ru.FSPO.AIS.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.FSPO.AIS.models.AbstractUser;
 import ru.FSPO.AIS.models.Role;
+import ru.FSPO.AIS.newmodels.AbstractUser;
 
 import java.util.Collection;
 import java.util.Set;

@@ -2,17 +2,22 @@ package ru.FSPO.AIS.newmodels;
 
 
 
+import lombok.Data;
 import ru.FSPO.AIS.models.Role;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
+@Data
 public class RenterLink extends AbstractUser {
 
-    private long companyId;
+
+    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.ALL)
+    private Set<RequestToBcLink> requestsSet;
+
+    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.ALL)
+    private Set<RentedPlacement> rentedPlacementSet;
 
     @Override
     @Transient
@@ -20,13 +25,6 @@ public class RenterLink extends AbstractUser {
         return Role.RENTER;
     }
 
-    public long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(long companyId) {
-        this.companyId = companyId;
-    }
 
     @Override
     public String toString() {

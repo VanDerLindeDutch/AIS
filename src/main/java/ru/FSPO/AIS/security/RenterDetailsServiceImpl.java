@@ -5,22 +5,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.FSPO.AIS.dao.RenterLinkDAO;
-import ru.FSPO.AIS.models.RenterLink;
+import ru.FSPO.AIS.newdao.RenterLinkRepository;
+import ru.FSPO.AIS.newmodels.RenterLink;
+
 
 @Service("renterDetailsServiceImpl")
 public class RenterDetailsServiceImpl implements UserDetailsService{
 
-    private final RenterLinkDAO renterLinkDAO;
+
+    private final RenterLinkRepository renterLinkRepository;
 
     @Autowired
-    public RenterDetailsServiceImpl(RenterLinkDAO renterLinkDAO) {
-        this.renterLinkDAO = renterLinkDAO;
+    public RenterDetailsServiceImpl(RenterLinkRepository renterLinkRepository) {
+        this.renterLinkRepository = renterLinkRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        RenterLink renterLink = renterLinkDAO.getByLogin(login).orElseThrow(()-> new UsernameNotFoundException("Renter not found"));
+        RenterLink renterLink = renterLinkRepository.findRenterLinkByLogin(login).orElseThrow(()-> new UsernameNotFoundException("Renter not found"));
         return SecurityUser.fromUser(renterLink);
     }
 }

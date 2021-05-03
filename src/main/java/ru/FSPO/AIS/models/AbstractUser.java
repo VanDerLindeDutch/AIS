@@ -13,7 +13,7 @@ public abstract class AbstractUser {
     //  private String phoneNumber;
     @Size(min = 5, max=20, message = "Login should be between 5 and 20 characters")
     protected String login;
-    @Size(min = 5, max=20, message = "Password should be between 5 and 20 characters")
+//    @Size(min = 5, max=20, message = "Password should be between 5 and 20 characters")
     protected String password;
 
     public long getId(){
@@ -22,7 +22,7 @@ public abstract class AbstractUser {
 
     public void setId(long id){
         this.id = id;
-    };
+    }
 
 
     public String getFirstName() {

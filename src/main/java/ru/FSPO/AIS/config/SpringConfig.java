@@ -1,5 +1,7 @@
 package ru.FSPO.AIS.config;
 
+import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -25,22 +27,23 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 
 @ComponentScan("ru.FSPO.AIS")
-//@PropertySource("classpath:database.properties")
+@PropertySource("classpath:database.properties")
 @EnableWebMvc
 @EnableJpaRepositories(basePackages = {"ru.FSPO.AIS.newdao"})
 public class SpringConfig implements WebMvcConfigurer {
 
 
-//    @Value("${database.URL}")
-    private String URL = "jdbc:mysql://localhost:3306/ais_mark1?useUnicode=yes&characterEncoding=UTF-8";
-//    @Value("${database.USERNAME}")
-    private String USERNAME = "root";
-//    @Value("${database.PASSWORD}")
-    private String PASSWORD = "0000";
+    @Value("${database.URL}")
+    private String URL;
+    @Value("${database.USERNAME}")
+    private String USERNAME;
+    @Value("${database.PASSWORD}")
+    private String PASSWORD;
 
 
 
@@ -57,14 +60,20 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "create");
+        properties.setProperty("hibernate.connection.CharSet", "utf8");
+        properties.setProperty("hibernate.connection.characterEncoding", "utf8");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
+//        vendorAdapter.setGenerateDdl(true);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaProperties(properties);
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setDataSource(dataSource());
         return factory;
     }
+
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {

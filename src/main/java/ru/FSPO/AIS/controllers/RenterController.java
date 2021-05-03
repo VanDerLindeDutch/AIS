@@ -1,7 +1,6 @@
 package ru.FSPO.AIS.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,19 +9,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.FSPO.AIS.config.SecurityConfig;
-import ru.FSPO.AIS.dao.RenterLinkDAO;
-import ru.FSPO.AIS.dao.UserType;
-import ru.FSPO.AIS.models.RenterLink;
+import ru.FSPO.AIS.newdao.RenterLinkRepository;
+import ru.FSPO.AIS.newmodels.RenterLink;
 
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/renter")
 public class RenterController {
-    private final RenterLinkDAO renterLinkDao;
+    private final RenterLinkRepository renterLinkRepository;
+
     @Autowired
-    public RenterController(RenterLinkDAO renterLinkDao) {
-        this.renterLinkDao = renterLinkDao;
+    public RenterController(RenterLinkRepository renterLinkRepository) {
+        this.renterLinkRepository = renterLinkRepository;
     }
 
     @GetMapping("/login")
@@ -30,20 +29,6 @@ public class RenterController {
         return "renter/login";
     }
 
-   /* @PostMapping("/login")
-    public String login(@ModelAttribute("renterLink") RenterLink renterLink, Model model){
-        renterLink =renterLinkDao.login(renterLink);
-        if(renterLink==null){
-            model.addAttribute("isCorrect", false);
-            return "renter/login";
-        }
-        else {
-            model.addAttribute("USERTYPE", UserType.RENTER);
-            model.addAttribute("ID", renterLink.getId());
-            return "redirect:/main";
-        }
-
-    }*/
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -57,7 +42,7 @@ public class RenterController {
             return "renter/register";
         }
         renterLink.setPassword(SecurityConfig.passwordEncoder().encode(renterLink.getPassword()));
-        renterLinkDao.save(renterLink);
+        renterLinkRepository.save(renterLink);
         return "redirect:/start";
     }
 

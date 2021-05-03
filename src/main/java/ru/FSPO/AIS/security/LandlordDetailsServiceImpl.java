@@ -1,28 +1,28 @@
 package ru.FSPO.AIS.security;
 
+import org.hibernate.internal.build.AllowPrintStacktrace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.FSPO.AIS.dao.BcLinkDAO;
-import ru.FSPO.AIS.models.BcLink;
-
-import java.security.Principal;
+import ru.FSPO.AIS.newdao.BcLinkRepository;
+import ru.FSPO.AIS.newmodels.BcLink;
 
 @Service("landlordDetailsServiceImpl")
 public class LandlordDetailsServiceImpl implements UserDetailsService {
 
-    private final BcLinkDAO bcLinkDAO;
+
+    private final BcLinkRepository bcLinkRepository;
 
     @Autowired
-    public LandlordDetailsServiceImpl(BcLinkDAO bcLinkDAO) {
-        this.bcLinkDAO = bcLinkDAO;
+    public LandlordDetailsServiceImpl(BcLinkRepository bcLinkRepository) {
+        this.bcLinkRepository = bcLinkRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        BcLink bcLink = bcLinkDAO.getByLogin(login).orElseThrow(() -> new UsernameNotFoundException("Landlord not found"));
+        BcLink bcLink = bcLinkRepository.findBcLinkByLogin(login).orElseThrow(()->new UsernameNotFoundException("landlord not foudn"));
         return SecurityUser.fromUser(bcLink);
     }
 }

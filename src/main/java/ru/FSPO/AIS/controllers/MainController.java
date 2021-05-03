@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.FSPO.AIS.dao.*;
 import ru.FSPO.AIS.models.*;
+import ru.FSPO.AIS.newdao.BcLinkRepository;
+import ru.FSPO.AIS.newdao.BusinessCenterRepository;
+import ru.FSPO.AIS.newdao.RequestToBcLinkRepository;
 import ru.FSPO.AIS.security.SecurityUser;
 import ru.FSPO.AIS.services.TimeLib;
 import ru.FSPO.AIS.services.TypeOfDownloadedFile;
@@ -32,9 +35,12 @@ import static ru.FSPO.AIS.services.DownloadFileService.DownloadFile;
 public class MainController {
 
     private final Permission permission = Permission.RENT;
-    private final BcLinkDAO bcLinkDAO;
+    private final BcLinkRepository bcLinkRepository;
+    private final BusinessCenterRepository businessCenterRepository;
+    private final RequestToBcLinkRepository requestToBcLinkRepository;
     private final BusinessCenterDAO businessCenterDAO;
     private final FloorDAO floorDAO;
+    private final BcLinkDAO bcLinkDAO;
     private final PlacementDAO placementDAO;
     private final RentedPlacementDAO rentedPlacementDAO;
     private final RequestToBcLinkDAO requestToBcLinkDAO;
@@ -42,8 +48,11 @@ public class MainController {
     private final ServiceDAO serviceDAO;
 
     @Autowired
-    public MainController(BcLinkDAO bcLinkDAO, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO, ServiceDAO serviceDAO) {
+    public MainController(BcLinkRepository bcLinkRepository, BcLinkDAO bcLinkDAO, BusinessCenterRepository businessCenterRepository, RequestToBcLinkRepository requestToBcLinkRepository, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO, ServiceDAO serviceDAO) {
+        this.bcLinkRepository = bcLinkRepository;
+        this.businessCenterRepository = businessCenterRepository;
         this.bcLinkDAO = bcLinkDAO;
+        this.requestToBcLinkRepository = requestToBcLinkRepository;
         this.businessCenterDAO = businessCenterDAO;
         this.floorDAO = floorDAO;
         this.placementDAO = placementDAO;
@@ -58,8 +67,10 @@ public class MainController {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (securityUser.getRole().equals(Role.LANDLORD)) {
-                int bcId = (int) securityUser.getId();
-                model.addAttribute("numberOfUnreadRequests", requestToBcLinkDAO.getByBcLink(bcId).stream().filter(x -> !x.isCheked()).count());
+                long bcId =  securityUser.getId();
+                ru.FSPO.AIS.newmodels.BcLink bcLink = new ru.FSPO.AIS.newmodels.BcLink();
+                bcLink.setId(bcId);
+                model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByBcLinkAndIsChekedIsTrue(bcLink));
             }
             addIdAndUsertype(model, securityUser.getId(), securityUser.getRole());
         }
@@ -77,7 +88,7 @@ public class MainController {
         setPresentUser(model);
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        model.addAttribute("centers", businessCenterDAO.getAll());
+        model.addAttribute("centers", businessCenterRepository.findAll());
         model.addAttribute("i", 0);
         return "main/main";
     }

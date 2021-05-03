@@ -20,7 +20,7 @@
 
 
         <div class="form-group">
-            <input th:field="*{password}" type="password" class="form-control" placeholder="Пароль" required="required">
+            <input th:field="*{password}" minlength="5" maxlength="20" type="password" class="form-control" placeholder="Пароль" required="required">
             <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="alert alert-primary" role="alert">
             </div>
         </div>

@@ -1,27 +1,23 @@
 package ru.FSPO.AIS.newmodels;
 
 
+import lombok.Data;
 import ru.FSPO.AIS.models.Role;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "bc_link")
+@Data
 public class BcLink extends AbstractUser {
 
-    @OneToMany
+    @OneToMany(mappedBy = "bcLink")
     private Set<BusinessCenter> businessCenters;
 
+    @OneToMany(mappedBy = "bcLink")
+    private Set<RequestToBcLink> requestToBcLinks;
 
-    public Set<BusinessCenter> getBusinessCenters() {
-        return businessCenters;
-    }
-
-    public void setBusinessCenters(Set<BusinessCenter> businessCenters) {
-        this.businessCenters = businessCenters;
-    }
 
     @Override
     @Transient

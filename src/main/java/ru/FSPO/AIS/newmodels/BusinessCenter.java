@@ -1,77 +1,37 @@
 package ru.FSPO.AIS.newmodels;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Entity
+@Table(name = "business_center")
+@Data
 public class BusinessCenter {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long bcId;
+  @Column(name = "bc_id")
+  private Long bcId;
 
   @Size(min = 12, max= 100,message = "Name should be valid")
   private String name;
   @Size(min = 8, max= 100,message = "Short name should be valid")
+  @Column(name = "short_name")
   private String shortName;
   @Size(min = 15, max= 100,message = "Address should be valid")
   private String address;
+  @Column(name = "image_path")
   private String imagePath;
   @ManyToOne
+  @JoinColumn(name = "bc_link_id")
   private BcLink bcLink;
+  @OneToMany(mappedBy = "businessCenter")
+  private Set<Floor> floors;
 
-
-  public long getBcId() {
-    return bcId;
-  }
-
-  public void setBcId(long bcId) {
-    this.bcId = bcId;
-  }
-
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-
-  public String getShortName() {
-    return shortName;
-  }
-
-  public void setShortName(String shortName) {
-    this.shortName = shortName;
-  }
-
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public BcLink getBcLink() {
-    return bcLink;
-  }
-
-  public void setBcLink(BcLink bcLink) {
-    this.bcLink = bcLink;
-  }
-
-  public String getImagePath() {
-    return imagePath;
-  }
-
-  public void setImagePath(String imagePath) {
-    this.imagePath = imagePath;
-  }
 
 
 }
