@@ -6,7 +6,6 @@
              version="2.1">
 
     <persistence-unit name="TestDB">
-<!--        <provider>org.hibernate.ejb.HibernatePersistence</provider>-->
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ais_mark1?useUnicode=yes&amp;characterEncoding=UTF-8" />
             <property name="javax.persistence.jdbc.user" value="root" />
@@ -14,7 +13,7 @@
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
-            <property name="hiber" value=""/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
     </persistence-unit>
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/main.css}">
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="fragments/navbar:: navbar"></nav>
+
+<div th:class="bcLink">
+    <span class="info"> Логин - </span>
+    <span class="info" th:text="${bcLink.getLogin()}"></span>
+    <br><hr>
+    <span class="info"> Имя - </span>
+    <span class="info" th:text="${bcLink.getFirstName()}"></span>
+    <br><hr>
+    <span class="info"> Емэйл - </span>
+    <span class="info" th:text="${bcLink.getEmail()}"></span>
+</div>
+<a style="width: 10%" th:href="@{/main/{id}(id=${bcID})}" class="btn btn-info" role="button" aria-pressed="true">Назад</a>
+
+
+</body>
+</html>

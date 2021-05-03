@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/main.css}">
+    <link rel="stylesheet" th:href="@{/resources/navbar.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="fragments/navbar:: navbar"></nav>
+
+<div>
+    <div th:id="name" th:class="bc_content" th:text="${businessCenter.getName()}"></div>
+    <div style="max-width: 20%" th:id="address" th:class="bc_content" th:text="${businessCenter.getAddress()}"></div>
+    <img width="400" height="300" id="photo" th:src="@{/resources/photos/uploads/{ref}(ref=${businessCenter.getImagePath()})}"
+         class="bc_content img-fluid img-thumbnail">
+</div>
+<div style="display: flex; flex-direction: column; justify-content: center">
+
+    <span>
+    <a style="width:10%" id="floorButton" th:href="@{/main/{id}/floors(id=${businessCenter.getBcId()})}"
+       class="btn btn-secondary buttons"
+       role="button" aria-pressed="true">Этажи</a>
+    <a style="width:10%" id="bcLinkButton" th:href="@{/main/{id}/bcLink(id=${businessCenter.getBcId()})}"
+       class="btn btn-info buttons"
+       role="button" aria-pressed="true">Владелец</a>
+    </span>
+    <div th:if="${isCurrentUser==true}" >
+        <a style="width:10%" th:href="@{/main/{id}/edit(id=${businessCenter.getBcId()})}" class="btn btn-warning buttons" role="button"
+           aria-pressed="true">Изменить</a>
+        <form  th:method="POST"
+              th:action="@{/main/{id}/del(id=${businessCenter.getBcId()})}" style="display: inline">
+            <input style="width:10%" type="submit" class="btn btn-danger buttons" role="button" aria-pressed="true" value="Удалить"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

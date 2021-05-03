@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/index.css}">
+
+</head>
+<body>
+<div id="mainDiv">
+
+    <div id="loginRenter" >
+        <span id="renter">АРЕНДАТОР</span>
+        <form action="/renter/login">
+            <input type="submit" value="Войти" id="buttonLoginRenter" class="button">
+        </form>
+        <form action="/renter/register">
+            <input type="submit" value="Зарегистрироваться" id="buttonRegisterRenter" class="button">
+        </form>
+    </div>
+    <div id="loginLandlord" >
+        <span id="landlord">АРЕНДОДАТЕЛЬ</span>
+        <form action="/landlord/login">
+            <input type="submit" value="Войти" id="buttonLoginLandlord" class="button">
+        </form>
+        <form action="/landlord/register">
+            <input type="submit" value="Зарегистрироваться" id="buttonRegisterLandlord" class="button">
+        </form>
+    </div>
+
+</div>
+<script th:src="@{/resources/index.js}"></script>
+</body>
+</html>

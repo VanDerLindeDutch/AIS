@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" th:fragment="modalButton">
+    Помещение уже арендовано
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" th:fragment="modalWindow">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Инфо</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div  class="modal-body">
+                <span th:each="rPlacement: ${rentedPlacements}">
+                    <span th:if="${rPlacement.getPlacementId()==place.key.getPlacementId()}">
+                    <span class="startDate" th:text="${rPlacement.getStartOfRent()}" >
+                    </span>
+                    <br>
+                    <span class="endDate" th:text="${rPlacement.getEndOfRent()}" th:if="${rPlacement.getPlacementId()==place.key.getPlacementId()}"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

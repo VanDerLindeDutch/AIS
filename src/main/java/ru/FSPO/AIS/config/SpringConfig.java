@@ -25,22 +25,25 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Configuration
 
 @ComponentScan("ru.FSPO.AIS")
-//@PropertySource("classpath:database.properties")
+@PropertySource("classpath:database.properties")
 @EnableWebMvc
 @EnableJpaRepositories(basePackages = {"ru.FSPO.AIS.newdao"})
 public class SpringConfig implements WebMvcConfigurer {
 
 
-//    @Value("${database.URL}")
-    private String URL = "jdbc:mysql://localhost:3306/ais_mark1?useUnicode=yes&characterEncoding=UTF-8";
-//    @Value("${database.USERNAME}")
-    private String USERNAME = "root";
-//    @Value("${database.PASSWORD}")
-    private String PASSWORD = "0000";
+    @Value("${database.URL}")
+    private String URL;
+    @Value("${database.USERNAME}")
+    private String USERNAME;
+    @Value("${database.PASSWORD}")
+    private String PASSWORD;
 
 
 
@@ -58,18 +61,20 @@ public class SpringConfig implements WebMvcConfigurer {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+
         vendorAdapter.setGenerateDdl(true);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setDataSource(dataSource());
         return factory;
     }
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-
+        Properties properties = new Properties();
+        properties.put("hibernate.hbm2ddl.auto", "create-drop");
         JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setJpaProperties(properties);
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
     }
