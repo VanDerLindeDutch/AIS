@@ -1,7 +1,0 @@
-.startDate::before{
-    content: "Дата начала аренды";
-}
-
-.endDate::before{
-    content: "Дата окончания аренды";
-}
