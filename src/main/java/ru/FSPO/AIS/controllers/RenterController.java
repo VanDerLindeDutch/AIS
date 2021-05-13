@@ -1,5 +1,6 @@
 package ru.FSPO.AIS.controllers;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.FSPO.AIS.config.SecurityConfig;
 import ru.FSPO.AIS.newdao.RenterLinkRepository;
+import ru.FSPO.AIS.newmodels.BcLink;
 import ru.FSPO.AIS.newmodels.RenterLink;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/renter")
@@ -37,7 +40,19 @@ public class RenterController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("renterLink") @Valid RenterLink renterLink, BindingResult bindingResult){
+    public String register(@ModelAttribute("renterLink") @Valid RenterLink renterLink, BindingResult bindingResult, Model model){
+
+        List<RenterLink> list = IterableUtils.toList(renterLinkRepository.findAll());
+
+        if(list.stream().anyMatch(x->x.getLogin().equals(renterLink.getLogin()))){
+            model.addAttribute("nonUniqueLogin", true);
+            return "renter/register";
+        }
+        if(list.stream().anyMatch(x->x.getEmail().equals(renterLink.getEmail()))){
+            model.addAttribute("nonUniqueEmail", true);
+            return "renter/register";
+        }
+
         if(bindingResult.hasErrors()){
             return "renter/register";
         }

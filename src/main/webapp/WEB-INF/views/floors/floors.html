@@ -33,11 +33,11 @@
                     <td class="content" th:text="${floor.getFloorNumber()}"></td>
                     <td >
                         <a class="btn btn-primary"
-                           th:href="${'/main/'+{floor.getBcId()}+'/floors/'+{floor.getFloorId()} + '/placements'}">Перейти</a>
+                           th:href="${'/main/'+{bcID}+'/floors/'+{floor.getFloorId()} + '/placements'}">Перейти</a>
                     </td>
                     <td th:if="${isCurrentUser}">
                         <form th:method="POST"
-                              th:action="${'/main/'+{floor.getBcId()}+'/floors/'+{floor.getFloorId()+'/del'}}" style="display: inline" >
+                              th:action="${'/main/'+{bcID}+'/floors/'+{floor.getFloorId()+'/del'}}" style="display: inline" >
                             <input type="submit" class="btn btn-danger" role="button" aria-pressed="true" value="Удалить"/>
                         </form>
                     </td>

@@ -1,7 +1,7 @@
 package ru.FSPO.AIS.newmodels;
 
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -11,6 +11,8 @@ import java.util.Set;
 @Table(name = "business_center")
 @Data
 public class BusinessCenter {
+
+
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +28,20 @@ public class BusinessCenter {
   private String address;
   @Column(name = "image_path")
   private String imagePath;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "bc_link_id")
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private BcLink bcLink;
-  @OneToMany(mappedBy = "businessCenter")
+  @OneToMany(mappedBy = "businessCenter", fetch = FetchType.LAZY)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<Floor> floors;
 
+  public BusinessCenter(Long bcId) {
+    this.bcId = bcId;
+  }
 
-
+  public BusinessCenter() {
+  }
 }

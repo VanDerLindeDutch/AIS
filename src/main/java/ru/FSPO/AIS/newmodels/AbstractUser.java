@@ -1,6 +1,7 @@
 package ru.FSPO.AIS.newmodels;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.FSPO.AIS.models.Role;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.sql.Date;
 
 @MappedSuperclass
 @Data
+@NoArgsConstructor
 public abstract class AbstractUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +29,9 @@ public abstract class AbstractUser {
 //    @Size(min = 5, max=20, message = "Password should be between 5 and 20 characters")
     protected String password;
 
+    public AbstractUser(Long id) {
+        this.id = id;
+    }
 
     public abstract Role getRole();
 }

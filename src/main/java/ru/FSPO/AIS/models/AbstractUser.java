@@ -1,5 +1,6 @@
 package ru.FSPO.AIS.models;
 
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 import java.sql.Date;
 

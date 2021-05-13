@@ -26,6 +26,7 @@
         </div>
         <span class="finalAmount"> Цена:</span>
         <span id="amount"></span>
+        <input style="display: none" id="totalAmount" name="totalAmount">
         <span class="finalAmount">руб.</span>
         <div th:if="${areDatesCorrect==false}" class="alert alert-primary" role="alert">
             Окончание аренды должно быть позже начала

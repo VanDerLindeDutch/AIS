@@ -29,27 +29,27 @@
                 <tbody>
                 <tr th:each="place : ${placements}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.key.getImagePath()})}"
+                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
                     <td class="content" th:text="${floorNumber}"></td>
-                    <td class="content" th:text="${place.key.getSurface()}"></td>
-                    <td class="content" th:text="${place.key.getPrice()}"></td>
-                    <td class="content"  th:if="${#lists.size(place.value)!=0}">
-                        <div style="margin-right: 10px" th:each="service : ${place.value}" th:text="${service.getDescription()}"></div>
+                    <td class="content" th:text="${place.getSurface()}"></td>
+                    <td class="content" th:text="${place.getPrice()}"></td>
+                    <td class="content"  th:if="${!place.getServiceSet().isEmpty()}">
+                        <div style="margin-right: 10px" th:each="service : ${place.getServiceSet()}" th:text="${service.getDescription()}"></div>
                     </td>
-                    <td th:if="${USERTYPE == 'RENTER' and !#lists.contains(requestedPlacementsID, place.key.getPlacementId()) and !#lists.contains(rentedPlacementsID, place.key.getPlacementId())}">
+                    <td th:if="${USERTYPE == 'RENTER' and place.getRequestsSet().isEmpty() and place.getRentedPlacement()==null}">
 
                         <a class="btn btn-primary"
-                           th:href="${'/main/placements/'+{place.key.getPlacementId()}+'/rent'}">Арендовать</a>
+                           th:href="${'/main/placements/'+{place.getPlacementId()}+'/rent'}">Арендовать</a>
                     </td>
-                    <td th:if="${#lists.contains(rentedPlacementsID, place.key.getPlacementId())}">
-                        <button th:replace="fragments/modalWindow:: modalButton"></button>
-                        <div th:replace="fragments/modalWindow:: modalWindow"></div>
-                    </td>
+<!--                    <td th:if="${place.getRentedPlacement()!=null}">-->
+<!--                        <button th:replace="fragments/modalWindow:: modalButton"></button>-->
+<!--                        <div th:replace="fragments/modalWindow:: modalWindow"></div>-->
+<!--                    </td>-->
                     <td th:if="${isCurrentUser}" >
                         <form th:method="POST"
-                              th:action="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.key.getPlacementId()}+'/del'}"
+                              th:action="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.getPlacementId()}+'/del'}"
                               style="display: inline">
                             <input type="submit" class="btn btn-danger" role="button" aria-pressed="true"
                                    value="Удалить"/>
@@ -58,7 +58,7 @@
                 </tr>
                 </tbody>
             </table>
-            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%"
+            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 10%; margin-bottom: 10%; width: 30%;margin-left: 25%"
                th:href="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/new'}" class="btn btn-info"
                role="button" aria-pressed="true">Добавить
                 помещение</a>

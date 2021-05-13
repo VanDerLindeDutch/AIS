@@ -12,8 +12,15 @@
         <h2 class="text-center">Регистрация</h2>
         <div class="form-group">
             <input th:field="*{login}" type="text" class="form-control" placeholder="Логин" required="required">
+
+            <div th:if="${nonUniqueLogin}" class="alert alert-primary" role="alert">
+                Такой логин уже существует
+            </div>
+
             <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="alert alert-primary" role="alert">
             </div>
+
+
         </div>
         <div class="form-group">
             <input th:field="*{password}" type="password" class="form-control" placeholder="Пароль" required="required">
@@ -27,8 +34,13 @@
         </div>
         <div class="form-group">
             <input th:field="*{email}" type="email" class="form-control" placeholder="Email" required="required">
+            <div th:if="${nonUniqueEmail}" class="alert alert-primary" role="alert">
+                Такой Email уже существует
+            </div>
             <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="alert alert-primary" role="alert">
             </div>
+
+
         </div>
         <div class="form-group">
             <input th:field="*{birthDate}" required="" type="text" class="form-control" placeholder="Дата рождения" onfocus="(this.type='date')"/>

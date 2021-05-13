@@ -2,6 +2,8 @@ package ru.FSPO.AIS.newmodels;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +16,7 @@ public class RequestToBcLink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private Long requestId;
+
     @Column(name = "expiration_date")
     private Date expirationDate;
     @Column(name = "start_of_rent")
@@ -24,13 +27,21 @@ public class RequestToBcLink {
     private boolean isCheked;
     @Column(name = "total_amount")
     private long totalAmount;
-    @ManyToOne(cascade=CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name = "r_id")
+    @ToString.Exclude
     private RenterLink renterLink;
+
     @ManyToOne
     @JoinColumn(name = "bc_link_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private BcLink bcLink;
-    @ManyToOne(cascade=CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name = "pl_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Placement placement;
 }

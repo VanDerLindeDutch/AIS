@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/renter/login").permitAll()
                     .failureUrl("/renter/login?error=true")
 
-                    .defaultSuccessUrl("/main")
+                    .defaultSuccessUrl("/main", true)
                     // logout
                     .and()
                     .logout()
@@ -119,7 +119,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/landlord/login").permitAll()
                     .loginProcessingUrl("/landlord/login")
-                    .defaultSuccessUrl("/main")
+                    .defaultSuccessUrl("/main", true)
                     .failureUrl("/landlord/login?error=true")
                     // logout
                     .and()

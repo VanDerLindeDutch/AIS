@@ -1,5 +1,6 @@
 package ru.FSPO.AIS.controllers;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import ru.FSPO.AIS.newmodels.BcLink;
 
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/landlord")
@@ -41,7 +43,18 @@ public class LandlordController {
 
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("bcLink") @Valid BcLink bcLink, BindingResult bindingResult) {
+    public String register(@ModelAttribute("bcLink") @Valid BcLink bcLink, BindingResult bindingResult, Model model) {
+        List<BcLink> list = IterableUtils.toList(bcLinkRepository.findAll());
+
+        if(list.stream().anyMatch(x->x.getLogin().equals(bcLink.getLogin()))){
+            model.addAttribute("nonUniqueLogin", true);
+            return "landlord/register";
+        }
+        if(list.stream().anyMatch(x->x.getEmail().equals(bcLink.getEmail()))){
+            model.addAttribute("nonUniqueEmail", true);
+            return "landlord/register";
+        }
+
         if (bindingResult.hasErrors()) {
             return "landlord/register";
         }

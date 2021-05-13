@@ -1,6 +1,6 @@
 package ru.FSPO.AIS.newmodels;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 
 import javax.persistence.*;
@@ -9,7 +9,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Floor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +24,27 @@ public class Floor {
     private String description;
     @Column(name = "image_path")
     private String imagePath;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "business_center")
     private BusinessCenter businessCenter;
+
     @OneToMany(mappedBy = "floor")
     private Set<Placement> placements;
 
+
+
+    public Floor(Long floorId) {
+        this.floorId = floorId;
+    }
+
+    @Override
+    public String toString() {
+        return "Floor{" +
+                "floorId=" + floorId +
+                ", floorNumber=" + floorNumber +
+                ", description='" + description + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
+    }
 }

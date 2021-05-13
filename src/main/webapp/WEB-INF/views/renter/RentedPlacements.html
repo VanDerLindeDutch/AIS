@@ -23,11 +23,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="rPL : ${map}">
-                    <td class="content" th:text="${rPL.value.getTotalAmount()}"></td>
-                    <td class="content" th:text="${rPL.key.getPrice()}"></td>
-                    <td class="content" th:text="${rPL.value.getStartOfRent()}"></td>
-                    <td class="content" th:text="${rPL.value.getEndOfRent()}"></td>
+                <tr th:each="rPL : ${rPlacements}">
+                    <td class="content" th:text="${rPL.getTotalAmount()}"></td>
+                    <td class="content" th:text="${rPL.getPlacement().getPrice()}"></td>
+                    <td class="content" th:text="${rPL.getStartOfRent()}"></td>
+                    <td class="content" th:text="${rPL.getEndOfRent()}"></td>
 <!--                    <td>-->
 <!--                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>-->
 <!--                    </td>-->

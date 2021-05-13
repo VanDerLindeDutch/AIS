@@ -1,29 +1,58 @@
 package ru.FSPO.AIS.newmodels;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Placement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "placement_id")
     private Long placementId;
+
     private long surface;
     private long price;
+
     @Column(name = "image_path")
     private String imagePath;
+
     @ManyToOne
     @JoinColumn(name = "floor_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Floor floor;
-    @ManyToMany(mappedBy = "placementSet", cascade=CascadeType.ALL)
+
+
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "placement_service",
+            joinColumns = @JoinColumn(name = "placement_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Service> serviceSet;
-    @OneToMany(mappedBy = "placement", cascade=CascadeType.ALL)
+
+    @OneToMany(mappedBy = "placement", cascade = CascadeType.MERGE)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<RequestToBcLink> requestsSet;
-    @OneToMany(mappedBy = "placement", cascade=CascadeType.ALL)
-    private Set<RentedPlacement> rentedPlacementSet;
+
+    @OneToOne(mappedBy = "placement", cascade = CascadeType.MERGE)
+    @PrimaryKeyJoinColumn
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private RentedPlacement rentedPlacement;
+
+    public Placement(Long placementId) {
+        this.placementId = placementId;
+    }
+
 
 }

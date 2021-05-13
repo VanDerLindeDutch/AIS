@@ -11,21 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.FSPO.AIS.dao.*;
 import ru.FSPO.AIS.models.*;
-import ru.FSPO.AIS.newdao.BcLinkRepository;
-import ru.FSPO.AIS.newdao.BusinessCenterRepository;
-import ru.FSPO.AIS.newdao.RequestToBcLinkRepository;
+import ru.FSPO.AIS.newdao.*;
+import ru.FSPO.AIS.newmodels.BusinessCenter;
+import ru.FSPO.AIS.newmodels.Floor;
+import ru.FSPO.AIS.newmodels.Placement;
 import ru.FSPO.AIS.security.SecurityUser;
 import ru.FSPO.AIS.services.TimeLib;
 import ru.FSPO.AIS.services.TypeOfDownloadedFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static ru.FSPO.AIS.services.DownloadFileService.DownloadFile;
 
@@ -35,12 +36,15 @@ import static ru.FSPO.AIS.services.DownloadFileService.DownloadFile;
 public class MainController {
 
     private final Permission permission = Permission.RENT;
+    private final ServiceRepository serviceRepository;
+    private final RentedPlacementsRepository rentedPlacementsRepository;
+    private final PlacementRepository placementRepository;
+    private final FloorRepository floorRepository;
     private final BcLinkRepository bcLinkRepository;
     private final BusinessCenterRepository businessCenterRepository;
     private final RequestToBcLinkRepository requestToBcLinkRepository;
     private final BusinessCenterDAO businessCenterDAO;
     private final FloorDAO floorDAO;
-    private final BcLinkDAO bcLinkDAO;
     private final PlacementDAO placementDAO;
     private final RentedPlacementDAO rentedPlacementDAO;
     private final RequestToBcLinkDAO requestToBcLinkDAO;
@@ -48,10 +52,13 @@ public class MainController {
     private final ServiceDAO serviceDAO;
 
     @Autowired
-    public MainController(BcLinkRepository bcLinkRepository, BcLinkDAO bcLinkDAO, BusinessCenterRepository businessCenterRepository, RequestToBcLinkRepository requestToBcLinkRepository, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO, ServiceDAO serviceDAO) {
+    public MainController(ServiceRepository serviceRepository, RentedPlacementsRepository rentedPlacementsRepository, PlacementRepository placementRepository, FloorRepository floorRepository, BcLinkRepository bcLinkRepository, BusinessCenterRepository businessCenterRepository, RequestToBcLinkRepository requestToBcLinkRepository, BusinessCenterDAO businessCenterDAO, FloorDAO floorDAO, PlacementDAO placementDAO, RentedPlacementDAO rentedPlacementDAO, RequestToBcLinkDAO requestToBcLinkDAO, RenterLinkDAO renterLinkDAO, ServiceDAO serviceDAO) {
+        this.serviceRepository = serviceRepository;
+        this.rentedPlacementsRepository = rentedPlacementsRepository;
+        this.placementRepository = placementRepository;
+        this.floorRepository = floorRepository;
         this.bcLinkRepository = bcLinkRepository;
         this.businessCenterRepository = businessCenterRepository;
-        this.bcLinkDAO = bcLinkDAO;
         this.requestToBcLinkRepository = requestToBcLinkRepository;
         this.businessCenterDAO = businessCenterDAO;
         this.floorDAO = floorDAO;
@@ -68,9 +75,7 @@ public class MainController {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (securityUser.getRole().equals(Role.LANDLORD)) {
                 long bcId =  securityUser.getId();
-                ru.FSPO.AIS.newmodels.BcLink bcLink = new ru.FSPO.AIS.newmodels.BcLink();
-                bcLink.setId(bcId);
-                model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByBcLinkAndIsChekedIsTrue(bcLink));
+                model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByBcLinkAndIsChekedIsTrue(new ru.FSPO.AIS.newmodels.BcLink(bcId)));
             }
             addIdAndUsertype(model, securityUser.getId(), securityUser.getRole());
         }
@@ -98,12 +103,12 @@ public class MainController {
     @GetMapping("/requests")
     public String getRequests(Model model) {
         setPresentUser(model);
-        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+     /*   SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<RequestToBcLink> requests = requestToBcLinkDAO.getByBcLink((int) ((SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-        List<Placement> placements = placementDAO.getRequestedByLandlordID((int) securityUser.getId());
-        Map<Placement, RequestToBcLink> map = IntStream.range(0, placements.size()).boxed().collect(Collectors.toMap(placements::get, requests::get));
+        List<ru.FSPO.AIS.models.Placement> placements = placementDAO.getRequestedByLandlordID((int) securityUser.getId());
+        Map<ru.FSPO.AIS.models.Placement, RequestToBcLink> map = IntStream.range(0, placements.size()).boxed().collect(Collectors.toMap(placements::get, requests::get));
         map.forEach((key, value) -> value.setTotalAmount(TimeLib.getDifferenceInMonths(value.getStartOfRent(), value.getEndOfRent()) * key.getPrice()));
-        SortedSet<Map.Entry<Placement, RequestToBcLink>> sortedSet = new TreeSet<>(new Comparator<Map.Entry<Placement, RequestToBcLink>>() {
+        SortedSet<Map.Entry<ru.FSPO.AIS.models.Placement, RequestToBcLink>> sortedSet = new TreeSet<>(new Comparator<Map.Entry<Placement, RequestToBcLink>>() {
             @Override
             public int compare(Map.Entry<Placement, RequestToBcLink> o1, Map.Entry<Placement, RequestToBcLink> o2) {
                 if (o1.getValue().getTotalAmount() == o2.getValue().getTotalAmount()) {
@@ -113,7 +118,7 @@ public class MainController {
             }
         });
         sortedSet.addAll(map.entrySet());
-        model.addAttribute("map", sortedSet);
+        model.addAttribute("map", sortedSet);*/
         return "landlord/requestsToRent";
     }
 
@@ -137,7 +142,7 @@ public class MainController {
     public String acceptRent(@PathVariable("rID") int rID) {
         RequestToBcLink request = requestToBcLinkDAO.getById(rID);
         requestToBcLinkDAO.delete(rID);
-        Placement placement = placementDAO.get((int) request.getPlacementId());
+        Placement placement = placementRepository.findById(request.getPlacementId()).get();//no need to check
         RentedPlacement rentedPlacement = new RentedPlacement();
         rentedPlacement.setRenterId(request.getRenterId());
         rentedPlacement.setPlacementId(request.getPlacementId());
@@ -156,44 +161,27 @@ public class MainController {
     }
 
     @GetMapping("/renter/{rID}/rentedPlacements")
-    public String getRentedPlacements(@PathVariable("rID") int rID, Model model) {
+    public String getRentedPlacements(@PathVariable("rID") long rID, Model model) {
         setPresentUser(model);
-        List<RentedPlacement> rentedPlacements = rentedPlacementDAO.getAllForUser(rID);
-        List<Placement> placements = placementDAO.getJoinPlacements(rID);
-        rentedPlacements.sort((o1, o2) -> {
-            if (o1.getPlacementId() == o2.getPlacementId()) {
-                return 0;
-            }
-            return o1.getPlacementId() > o2.getPlacementId() ? 1 : -1;
-        });
-
-        placements.sort((o1, o2) -> {
-            if (o1.getPlacementId() == o2.getPlacementId()) {
-                return 0;
-            }
-            return o1.getPlacementId() > o2.getPlacementId() ? 1 : -1;
-        });
-
-        Map<Placement, RentedPlacement> map = IntStream.range(0, placements.size()).boxed().collect(Collectors.toMap(placements::get, rentedPlacements::get));
-        model.addAttribute("map", map);
+        List<ru.FSPO.AIS.newmodels.RentedPlacement> rentedPlacements = rentedPlacementsRepository.findRentedPlacementsByRenterLink(new ru.FSPO.AIS.newmodels.RenterLink(rID));
+        model.addAttribute("rPlacements", rentedPlacements);
         return "renter/RentedPlacements";
     }
 
     @GetMapping("/{bcID}")
-    public String show(@PathVariable("bcID") int id, Model model) {
+    public String show(@PathVariable("bcID") long id, Model model) {
         setPresentUser(model);
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("businessCenter", businessCenterDAO.get(id));
-        System.out.println(businessCenterDAO.get(id).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
-        model.addAttribute("isCurrentUser", businessCenterDAO.get(id).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
+        model.addAttribute("businessCenter", businessCenterRepository.findById(id).get());
+        model.addAttribute("isCurrentUser", businessCenterRepository.findById(id).get().getBcLink().getId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
         return "main/show";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @GetMapping("/{bcID}/edit")
-    public String getChangePage(@PathVariable("bcID") int id, Model model) {
+    public String getChangePage(@PathVariable("bcID") long id, Model model) {
         setPresentUser(model);
-        model.addAttribute("businessCenter", businessCenterDAO.get(id));
+        model.addAttribute("businessCenter", businessCenterRepository.findById(id).get());
         return "main/change";
     }
 
@@ -219,8 +207,8 @@ public class MainController {
         }
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         businessCenter.setImagePath(file.getOriginalFilename());
-        businessCenter.setBcLinkId(securityUser.getId());
-        businessCenterDAO.save(businessCenter);
+        businessCenter.setBcLink(new ru.FSPO.AIS.newmodels.BcLink(securityUser.getId()));
+        businessCenterRepository.save(businessCenter);
         return "redirect:/main";
     }
 
@@ -236,15 +224,16 @@ public class MainController {
             e.printStackTrace();
         }
         businessCenter.setImagePath(file.getOriginalFilename());
-        businessCenterDAO.update(bcID, businessCenter);
+        businessCenter.setBcId((long) bcID);
+        businessCenterRepository.save(businessCenter);
         return "redirect:/main";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("/{bcID}/del")
-    public String delete(@PathVariable("bcID") int bcId, Model model) {
+    public String delete(@PathVariable("bcID") long bcId, Model model) {
         try {
-            businessCenterDAO.drop(bcId);
+            businessCenterRepository.delete(new BusinessCenter(bcId));
         } catch (Exception exception) {
             return "redirect:/main/" + bcId + "/floors";
         }
@@ -253,20 +242,25 @@ public class MainController {
 
 
     @GetMapping("{bcID}/bcLink")
-    public String showLink(@PathVariable("bcID") int bcID, Model model) {
+    public String showLink(@PathVariable("bcID") long bcID, Model model) {
         setPresentUser(model);
         model.addAttribute("bcID", bcID);
-        model.addAttribute("bcLink", bcLinkDAO.get((int) businessCenterDAO.get(bcID).getBcLinkId()));
+        model.addAttribute("bcLink", bcLinkRepository.findBcLinkByBusinessCenters(new BusinessCenter(bcID)));
         return "main/userInfo";
     }
 
     @GetMapping("{bcID}/floors")
-    public String getFloors(@PathVariable("bcID") int bcID, Model model) {
+    public String getFloors(@PathVariable("bcID") long bcID, Model model) {
         setPresentUser(model);
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("floors", floorDAO.getBcsFloors(bcID));
+        model.addAttribute("floors", floorRepository.findFloorByBusinessCenterBcId(bcID));
+        System.out.println(floorRepository.findFloorByBusinessCenterBcId(bcID));
         model.addAttribute("bcID", bcID);
-        model.addAttribute("isCurrentUser", businessCenterDAO.get(bcID).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
+        model.addAttribute("isCurrentUser", businessCenterRepository.
+                findById(bcID).get(). //no need to check
+                getBcLink().getId() == securityUser.getId()
+                &&
+                securityUser.getRole().equals(Role.LANDLORD));
         return "floors/floors";
     }
 
@@ -281,7 +275,7 @@ public class MainController {
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/new")
-    public String createFloor(@PathVariable("bcID") int bcID, @ModelAttribute("floor") @Valid Floor floor, BindingResult bindingResult, @RequestParam MultipartFile file, Model model) {
+    public String createFloor(@PathVariable("bcID") long bcID, @ModelAttribute("floor") @Valid Floor floor, BindingResult bindingResult, @RequestParam MultipartFile file, Model model) {
         if (bindingResult.hasErrors()) {
             return "main/floors/newFloor";
         }
@@ -290,57 +284,44 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        floor.setBcId(bcID);
+        floor.setBusinessCenter(new BusinessCenter(bcID));
         floor.setImagePath(file.getOriginalFilename());
-        floorDAO.insert(floor);
+        floorRepository.save(floor);
 
         return "redirect:/main/" + bcID + "/floors";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/del")
-    public String deleteFloor(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorId, Model model) {
+    public String deleteFloor(@PathVariable("bcID") long bcID, @PathVariable("floorID") long floorId, Model model) {
         try {
-            floorDAO.delete(floorId);
+            floorRepository.deleteById(floorId);
         } catch (Exception exception) {
             return "redirect:/main/" + bcID + "/floors/" + floorId + "/placements";
         }
         return "redirect:/main/" + bcID + "/floors";
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @GetMapping("{bcID}/floors/{floorID}/placements")
-    public String getPlacements(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, Model model) {
-        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        int userId = (int) securityUser.getId();
-        List<Placement> placements = placementDAO.getAllforOneFloor(floorID);
-        if (securityUser.getRole().equals(Role.RENTER)) {
-            List<Long> requestedPlacementID = requestToBcLinkDAO.getRequestsJoinPlacements(userId, floorID).stream().map(RequestToBcLink::getPlacementId).collect(Collectors.toList());
-            model.addAttribute("requestedPlacementsID", requestedPlacementID);
-        }
-        List<RentedPlacement> rentedPlacements = rentedPlacementDAO.getForFloor(floorID);
+    public String getPlacements(@PathVariable("bcID") long bcID, @PathVariable("floorID") long floorID, Model model) {
 
-        List<Map<String, Object>> list = serviceDAO.getAllForFloor(floorID);
-        Map<Placement, List<Service>> placementServices = placements.
-                stream()
-                .collect(Collectors.toMap(x->x,
-                y->new ArrayList<>()));
-        for(Map map:list){
-            Stream.ofNullable(placementServices)
-                    .flatMap(x->x.entrySet().stream())
-                    .filter(x->x.getKey().getPlacementId()==((Number) map.get("placement_id")).longValue())
-                    .findFirst()
-                    .get()
-                    .getValue()
-                    .add(new Service(((Number) map.get("service_id")).longValue(), (String) map.get("description"))) ;
+        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long renterId = -1;
+        if (securityUser.getRole().equals(Role.RENTER)) {
+            renterId = securityUser.getId();
         }
-        model.addAttribute("rentedPlacementsID", rentedPlacements.stream().map(RentedPlacement::getPlacementId).collect(Collectors.toList()));
-        model.addAttribute("rentedPlacements", rentedPlacements);
+
+        entityManager.clear();
+        Set<Placement> placements = placementRepository.findPlacementsByFloorId( floorID, renterId);
+        System.out.println(placements);
+        model.addAttribute("placements", placements);
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
-        model.addAttribute("isCurrentUser", businessCenterDAO.get(bcID).getBcLinkId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
-        model.addAttribute("placements", placementServices);
-        model.addAttribute("floorNumber", floorDAO.get(floorID).getFloorNumber());
+        model.addAttribute("isCurrentUser", businessCenterRepository.findById(bcID).get().getBcLink().getId() == securityUser.getId() && securityUser.getRole().equals(Role.LANDLORD));
+        model.addAttribute("floorNumber", floorRepository.findById(floorID).get().getFloorNumber());
         setPresentUser(model);
         return "placement/placements";
     }
@@ -351,28 +332,30 @@ public class MainController {
         setPresentUser(model);
         model.addAttribute("placement", new Placement());
         model.addAttribute("bcID", bcID);
-        model.addAttribute("services", serviceDAO.getAll());
+        model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("floorID", floorID);
         return "placement/newPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
     @GetMapping("placements/{plID}/rent")
-    public String getPlacementRentPage(@PathVariable("plID") int plID, Model model) {
+    public String getPlacementRentPage(@PathVariable("plID") long plID, Model model) {
         setPresentUser(model);
-        model.addAttribute("requestToBcLink", new RequestToBcLink());
+        System.out.println(plID);
+        ru.FSPO.AIS.newmodels.RequestToBcLink request = new ru.FSPO.AIS.newmodels.RequestToBcLink();
+        model.addAttribute("requestToBcLink", request);
         model.addAttribute("plID", plID);
-        model.addAttribute("price", placementDAO.get(plID).getPrice());
+        model.addAttribute("price", placementRepository.findById(plID).get().getPrice());
         model.addAttribute("areDatesCorrect", true);
         return "main/rentPlacement";
     }
 
     @PreAuthorize("hasAuthority('Rent')")
     @PostMapping("placements/{plID}/rent")
-    public String createRentPlacement(Model model, @PathVariable("plID") int plID, @RequestParam String startOfRent, @RequestParam String endOfRent) {
+    public String createRentPlacement(Model model, @PathVariable("plID") long plID, @RequestParam String startOfRent, @RequestParam String endOfRent, @RequestParam long totalAmount) {
 
         try {
-            RequestToBcLink requestToBcLink = new RequestToBcLink();
+            ru.FSPO.AIS.newmodels.RequestToBcLink requestToBcLink = new ru.FSPO.AIS.newmodels.RequestToBcLink();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
             Date dateStartOfRent = simpleDateFormat.parse(startOfRent);
             Date dateEndOfRent = simpleDateFormat.parse(endOfRent);
@@ -383,12 +366,14 @@ public class MainController {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, 1);
+            requestToBcLink.setTotalAmount(totalAmount);
             requestToBcLink.setStartOfRent(dateStartOfRent);
             requestToBcLink.setEndOfRent(dateEndOfRent);
             requestToBcLink.setExpirationDate(new Date(calendar.getTimeInMillis()));
-            requestToBcLink.setRenterId(securityUser.getId());
-            requestToBcLink.setPlacementId(plID);
-            requestToBcLinkDAO.insert(requestToBcLink);
+            requestToBcLink.setRenterLink(new ru.FSPO.AIS.newmodels.RenterLink(securityUser.getId()));
+            requestToBcLink.setBcLink(new ru.FSPO.AIS.newmodels.BcLink(bcLinkRepository.findBcLinkByPlacementID(plID).get()));
+            requestToBcLink.setPlacement(new Placement(plID));
+            requestToBcLinkRepository.save(requestToBcLink);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -400,8 +385,8 @@ public class MainController {
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/placements/new")
-    public String createPlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @ModelAttribute("placement") Placement placement, Model model, @RequestParam(name = "checkbox", required = false) String string, @RequestParam MultipartFile file) {
-        placement.setFloorId(floorID);
+    public String createPlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") long floorID, @ModelAttribute("placement") Placement placement, Model model, @RequestParam(name = "checkbox", required = false) String string, @RequestParam MultipartFile file) {
+        placement.setFloor(new Floor(floorID));
         model.addAttribute("bcID", bcID);
         model.addAttribute("floorID", floorID);
         try {
@@ -410,19 +395,23 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int plId = placementDAO.insert(placement);
         if (string != null) {
             List<Integer> list = Arrays.stream(string.split(",")).map(Integer::parseInt).collect(Collectors.toList());
-            list.forEach(x -> serviceDAO.insertServiceToPlacement(plId, x));
+            Set<ru.FSPO.AIS.newmodels.Service> set = list.stream().map(
+                    x -> new ru.FSPO.AIS.newmodels.Service(x.longValue()))
+                    .collect(Collectors.toSet());
+            placement.setServiceSet(set);
         }
+        placementRepository.save(placement);
+
 
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
     }
 
     @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("{bcID}/floors/{floorID}/placements/{plID}/del")
-    public String deletePlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @PathVariable("plID") int plID, Model model) {
-        placementDAO.delete(plID);
+    public String deletePlacement(@PathVariable("bcID") int bcID, @PathVariable("floorID") int floorID, @PathVariable("plID") long plID, Model model) {
+        placementRepository.delete(new Placement(plID));
         return "redirect:/main/" + bcID + "/floors/" + floorID + "/placements";
     }
 
@@ -430,17 +419,17 @@ public class MainController {
     @GetMapping("/servPlacements")
     public String getServicesPlacementsPage(Model model){
         setPresentUser(model);
-        model.addAttribute("services", serviceDAO.getAll());
+        model.addAttribute("services", serviceRepository.findAll());
         return "main/placementsServices";
     }
 
     @PostMapping("/servPlacements")
     public String group(Model model,  @RequestParam(name = "checkbox", required = false) String string){
         setPresentUser(model);
-        model.addAttribute("services", serviceDAO.getAll());
+        model.addAttribute("services", serviceRepository.findAll());
         if (string != null) {
 
-            Map<Placement, List<Service>> placements = placementDAO.getJoinServices(Arrays.stream(string.split(","))
+            Map<ru.FSPO.AIS.models.Placement, List<Service>> placements = placementDAO.getJoinServices(Arrays.stream(string.split(","))
                             .map(Integer::parseInt).toArray(Integer[]::new));
             System.out.println(placements);
             model.addAttribute("placements", placements);

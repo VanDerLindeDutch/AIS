@@ -3,20 +3,26 @@ package ru.FSPO.AIS.newmodels;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import ru.FSPO.AIS.models.Role;
 
 import javax.persistence.*;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
+@NoArgsConstructor
 public class RenterLink extends AbstractUser {
 
 
-    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.MERGE)
+    @EqualsAndHashCode.Exclude
     private Set<RequestToBcLink> requestsSet;
 
     @OneToMany(mappedBy = "renterLink", cascade=CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
     private Set<RentedPlacement> rentedPlacementSet;
 
     @Override
@@ -26,18 +32,7 @@ public class RenterLink extends AbstractUser {
     }
 
 
-    @Override
-    public String toString() {
-        return "RenterLink{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", birthDate=" + birthDate +
-                ", email='" + email + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public RenterLink(Long id) {
+        super(id);
     }
-
-
-
 }

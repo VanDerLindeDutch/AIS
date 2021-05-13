@@ -38,10 +38,6 @@ public class RentedPlacementDAO {
     }
 
 
-
-
-
-
     public List<RentedPlacement> getForFloor(int fID){
         return jdbcTemplate.query("SELECT * FROM rented_placement JOIN placement ON rented_placement.placement_id = placement.placement_id AND placement.floor_id = ?", new Object[]{fID}, new RentedPlacementMapper());
     }
