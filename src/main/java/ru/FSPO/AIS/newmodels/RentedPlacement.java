@@ -14,9 +14,8 @@ import java.util.Date;
 public class RentedPlacement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "placement_id")
-    private Long rPlacementId;
+    private Long placementId;
 
     @Column(name = "total_amount")
     private long totalAmount;
@@ -25,7 +24,7 @@ public class RentedPlacement {
     @Column(name = "end_of_rent")
     private Date endOfRent;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "placement_id")
     @ToString.Exclude

@@ -17,6 +17,7 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
     private Long serviceId;
+    @EqualsAndHashCode.Exclude
     private String description;
 
     @ManyToMany(mappedBy = "serviceSet")

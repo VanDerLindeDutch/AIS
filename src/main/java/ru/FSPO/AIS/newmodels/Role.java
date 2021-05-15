@@ -1,4 +1,4 @@
-package ru.FSPO.AIS.models;
+package ru.FSPO.AIS.newmodels;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

@@ -1,4 +1,4 @@
-package ru.FSPO.AIS.models;
+package ru.FSPO.AIS.newmodels;
 
 public enum Permission {
     CREATE_BC("CreateBC"),

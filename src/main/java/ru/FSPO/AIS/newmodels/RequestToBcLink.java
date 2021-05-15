@@ -30,7 +30,6 @@ public class RequestToBcLink {
 
     @ManyToOne
     @JoinColumn(name = "r_id")
-    @ToString.Exclude
     private RenterLink renterLink;
 
     @ManyToOne

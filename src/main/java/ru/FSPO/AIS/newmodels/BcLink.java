@@ -2,7 +2,6 @@ package ru.FSPO.AIS.newmodels;
 
 
 import lombok.*;
-import ru.FSPO.AIS.models.Role;
 
 import javax.persistence.*;
 import java.util.Set;

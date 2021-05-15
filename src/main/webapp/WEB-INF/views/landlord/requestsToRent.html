@@ -27,21 +27,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="entry : ${map}">
+                <tr th:each="request : ${requests}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${entry.key.getImagePath()})}"
+                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${request.getPlacement().getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
-                    <td class="content"  th:text="${entry.value.getTotalAmount()}"></td>
-                    <td class="content"  th:text="${entry.value.getExpirationDate()}"></td>
-                    <td class="content"  th:text="${entry.value.getStartOfRent()}"></td>
-                    <td class="content"  th:text="${entry.value.getEndOfRent()}"></td>
-                    <td class="content"  th:text="${entry.key.getPrice()}"></td>
+                    <td class="content"  th:text="${request.getTotalAmount()}"></td>
+                    <td class="content"  th:text="${request.getExpirationDate()}"></td>
+                    <td class="content"  th:text="${request.getStartOfRent()}"></td>
+                    <td class="content"  th:text="${request.getEndOfRent()}"></td>
+                    <td class="content"  th:text="${request.getPlacement().getPrice()}"></td>
                     <td>
-                        <a class="btn btn-primary" th:href="@{/main/requests/{id}(id=${entry.value.getRequestId()})}">Перейти</a>
+                        <a class="btn btn-primary" th:href="@{/main/requests/{id}(id=${request.getRequestId()})}">Перейти</a>
                     </td>
                     <td>
-                        <form th:action="@{/main/requests/drop/{id}(id=${entry.value.getRequestId()})}" th:method="POST">
+                        <form th:action="@{/main/requests/drop/{id}(id=${request.getRequestId()})}" th:method="POST">
                             <button type="submit" class="btn btn-danger" >Отклонить</button>
                         </form>
                     </td>

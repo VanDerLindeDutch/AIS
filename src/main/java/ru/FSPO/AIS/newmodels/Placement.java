@@ -7,8 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Placement {
     @Id
@@ -41,7 +40,6 @@ public class Placement {
 
     @OneToMany(mappedBy = "placement", cascade = CascadeType.MERGE)
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<RequestToBcLink> requestsSet;
 
     @OneToOne(mappedBy = "placement", cascade = CascadeType.MERGE)

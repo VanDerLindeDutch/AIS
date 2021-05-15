@@ -24,10 +24,10 @@
 <span class="content bc_content"  th:text="${requestToBcLink.getEndOfRent()}"></span>
 <br>
 <span class="bc_content">Email для связи-</span>
-<span class="content bc_content"  th:text="${renter.getEmail()}"></span>
+<span class="content bc_content"  th:text="${requestToBcLink.getRenterLink().getEmail()}"></span>
 <br>
 <span class="bc_content">Имя-</span>
-<span class="content bc_content"  th:text="${renter.getFirstName()}"></span>
+<span class="content bc_content"  th:text="${requestToBcLink.getRenterLink().getFirstName()}"></span>
 <br>
 <form th:action="@{/main/request/{id}(id=${rID})}" th:method="POST">
     <div class="form-group regBut">

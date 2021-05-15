@@ -43,11 +43,11 @@
                         <a class="btn btn-primary"
                            th:href="${'/main/placements/'+{place.getPlacementId()}+'/rent'}">Арендовать</a>
                     </td>
-<!--                    <td th:if="${place.getRentedPlacement()!=null}">-->
-<!--                        <button th:replace="fragments/modalWindow:: modalButton"></button>-->
-<!--                        <div th:replace="fragments/modalWindow:: modalWindow"></div>-->
-<!--                    </td>-->
-                    <td th:if="${isCurrentUser}" >
+                    <td th:if="${place.getRentedPlacement()!=null}">
+                        <button th:replace="fragments/modalWindow:: modalButton"></button>
+                        <div th:replace="fragments/modalWindow:: modalWindow"></div>
+                    </td>
+                    <td th:if="${isCurrentUser and place.getRentedPlacement()==null}" >
                         <form th:method="POST"
                               th:action="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.getPlacementId()}+'/del'}"
                               style="display: inline">
@@ -65,9 +65,10 @@
         </div>
     </div>
 </div>
+<script th:src="@{/resources/main/placements.js}"></script>
 <script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script th:src="@{/resources/main/placements.js}"></script>
+
 </body>
 </html>
