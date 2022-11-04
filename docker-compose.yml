@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: mysql
+    volumes:
+      - /dataDir:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "0000"
+      MYSQL_PASSWORD: "0000"
+      MYSQL_DATABASE: ais_mark1
+    ports:
+      - '3307:3306'
+  tomcatwar:
+    build: .
+    ports:
+      - '8081:8080'

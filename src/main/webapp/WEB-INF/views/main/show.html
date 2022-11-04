@@ -14,7 +14,8 @@
 <div>
     <div th:id="name" th:class="bc_content" th:text="${businessCenter.getName()}"></div>
     <div style="max-width: 20%" th:id="address" th:class="bc_content" th:text="${businessCenter.getAddress()}"></div>
-    <img width="400" height="300" id="photo" th:src="@{/resources/photos/uploads/{ref}(ref=${businessCenter.getImagePath()})}"
+    <img width="400" height="300" id="photo"
+         th:src="@{/resources/photos/uploads/{ref}(ref=${businessCenter.getImagePath()})}"
          class="bc_content img-fluid img-thumbnail">
 </div>
 <div style="display: flex; flex-direction: column; justify-content: center">
@@ -27,12 +28,14 @@
        class="btn btn-info buttons"
        role="button" aria-pressed="true">Владелец</a>
     </span>
-    <div th:if="${isCurrentUser==true}" >
-        <a style="width:10%" th:href="@{/main/{id}/edit(id=${businessCenter.getBcId()})}" class="btn btn-warning buttons" role="button"
+    <div th:if="${isCurrentUser==true}">
+        <a style="width:10%" th:href="@{/main/{id}/edit(id=${businessCenter.getBcId()})}"
+           class="btn btn-warning buttons" role="button"
            aria-pressed="true">Изменить</a>
-        <form  th:method="POST"
+        <form th:method="POST"
               th:action="@{/main/{id}/del(id=${businessCenter.getBcId()})}" style="display: inline">
-            <input style="width:10%" type="submit" class="btn btn-danger buttons" role="button" aria-pressed="true" value="Удалить"/>
+            <input style="width:10%" type="submit" class="btn btn-danger buttons" role="button" aria-pressed="true"
+                   value="Удалить"/>
         </form>
     </div>
 </div>

@@ -14,18 +14,22 @@
 <div class="login-form">
     <form th:action="@{/main/servPlacements}" th:method="POST" enctype="multipart/form-data">
         <div style="display: none">
-            <input type="checkbox" class="serviceCheckBox" name="checkbox" th:each="service:${services}" th:value="${service.getServiceId()}">
+            <input id="inputCheckbox" type="checkbox" class="serviceCheckBox" name="checkbox" th:each="service:${services}"
+                   th:value="${service.getServiceId()}">
+            <input id="sortValue" name="sort">
+            <input id="checkboxText" th:text="${checkbox}"></input>
         </div>
         <div class="form-group">
             <span>Сервисы-</span>
-            <select  id="selectService" class="form-select">
-                <option disabled selected value> -- выберите сервисы -- </option>
-                <option th:each="service:${services}" th:value="${service.getServiceId()}" th:text="${service.getDescription()}"></option>
+            <select id="selectService" class="form-select">
+                <option disabled selected value> -- выберите сервисы --</option>
+                <option th:each="service:${services}" th:value="${service.getServiceId()}"
+                        th:text="${service.getDescription()}"></option>
             </select>
         </div>
-        <div id="placeToAlerts" ></div>
+        <div id="placeToAlerts" style="width: 500px"></div>
         <div class="form-group regBut">
-            <button type="submit" class="btn btn-primary btn-block">Поиск</button>
+            <button id="sendServices" type="submit" class="btn btn-primary btn-block">Поиск</button>
         </div>
     </form>
 </div>
@@ -37,9 +41,10 @@
                 <thead>
                 <tr>
                     <th style=" width: 200px" class="content" scope="col">Фото</th>
+                    <th class="content" scope="col">Адрес</th>
                     <th class="content" scope="col">Этаж</th>
                     <th class="content" scope="col">Площадь</th>
-                    <th class="content" scope="col">Цена</th>
+                    <th class="content" scope="col"><div id="sortHref"> Цена</div></th>
                     <th class="content" scope="col">Службы</th>
                     <th th:if="${USERTYPE == 'RENTER'}" class="content" scope="col">Арендовать</th>
                 </tr>
@@ -47,14 +52,17 @@
                 <tbody>
                 <tr th:each="place : ${placements}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.getImagePath()})}"
+                        <img style="height: 350px; width: 400px"
+                             th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
+                    <td class="content" th:text="${place.getFloor().getBusinessCenter().getAddress()}"></td>
                     <td class="content" th:text="${place.getFloor().getFloorNumber()}"></td>
                     <td class="content" th:text="${place.getSurface()}"></td>
                     <td class="content" th:text="${place.getPrice()}"></td>
-                    <td class="content"  th:if="${!place.getServiceSet().isEmpty()}">
-                        <div style="margin-right: 10px" th:each="service : ${place.getServiceSet()}" th:text="${service.getDescription()}"></div>
+                    <td class="content" th:if="${!place.getServiceSet().isEmpty()}">
+                        <div style="margin-right: 10px" th:each="service : ${place.getServiceSet()}"
+                             th:text="${service.getDescription()}"></div>
                     </td>
                     <td th:if="${USERTYPE == 'RENTER' and place.getRequestsSet().isEmpty() and place.getRentedPlacement()==null}">
 
@@ -73,8 +81,14 @@
 
 <script th:src="@{/resources/main/newPlacement.js}"></script>
 <script th:src="@{/resources/main/placements.js}"></script>
-<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 </html>

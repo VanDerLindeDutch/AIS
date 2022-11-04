@@ -1,9 +1,9 @@
-#notice{
-    position:absolute;
-    top:-0.002px;
-    margin-left:100px;
-    max-width:18px;
-    max-height:18px;
+#notice {
+    position: absolute;
+    top: -0.002px;
+    margin-left: 100px;
+    max-width: 18px;
+    max-height: 18px;
     background: darkturquoise;
     color: #000;
     text-align: center;

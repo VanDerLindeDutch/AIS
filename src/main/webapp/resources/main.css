@@ -1,39 +1,41 @@
-.bc_content{
+.bc_content {
     position: relative;
     left: 35%;
-    top:50%;
-    font-size: 150%;
-    font-family: "Times New Roman";
-}
-.content{
+    top: 50%;
     font-size: 150%;
     font-family: "Times New Roman";
 }
 
-.info{
+.content {
+    font-size: 150%;
+    font-family: "Times New Roman";
+}
+
+.info {
     position: relative;
     left: 30%;
-    top:10%;
+    top: 10%;
     margin-bottom: 50px;
     font-size: 3vw;
 }
-#name:before{
+
+#name:before {
     content: "Название БЦ - ";
 }
 
-#address:before{
+#address:before {
     content: "Адрес БЦ - ";
 }
 
-#photo:before{
+#photo:before {
     content: "Фото БЦ - ";
 }
 
 
-.buttons{
+.buttons {
     position: relative;
     width: 8%;
-    margin-top:5%;
-    left:35%
+    margin-top: 5%;
+    left: 35%
 }
 

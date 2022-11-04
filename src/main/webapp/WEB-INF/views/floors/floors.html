@@ -31,20 +31,23 @@
                     </td>
                     <td class="content" th:text="${floor.getDescription()}"></td>
                     <td class="content" th:text="${floor.getFloorNumber()}"></td>
-                    <td >
+                    <td>
                         <a class="btn btn-primary"
                            th:href="${'/main/'+{bcID}+'/floors/'+{floor.getFloorId()} + '/placements'}">Перейти</a>
                     </td>
                     <td th:if="${isCurrentUser}">
                         <form th:method="POST"
-                              th:action="${'/main/'+{bcID}+'/floors/'+{floor.getFloorId()+'/del'}}" style="display: inline" >
-                            <input type="submit" class="btn btn-danger" role="button" aria-pressed="true" value="Удалить"/>
+                              th:action="${'/main/'+{bcID}+'/floors/'+{floor.getFloorId()+'/del'}}"
+                              style="display: inline">
+                            <input type="submit" class="btn btn-danger" role="button" aria-pressed="true"
+                                   value="Удалить"/>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%" th:href="@{/main/{id}/floors/new(id=${bcID})}" class="btn btn-info" role="button" aria-pressed="true">Добавить
+            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 15%; width: 30%;margin-left: 25%"
+               th:href="@{/main/{id}/floors/new(id=${bcID})}" class="btn btn-info" role="button" aria-pressed="true">Добавить
                 этаж</a>
         </div>
     </div>

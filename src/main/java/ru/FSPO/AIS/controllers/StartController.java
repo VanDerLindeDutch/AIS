@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class StartController {
 
     @GetMapping("/start")
-    public String getStartWindow(){
+    public String getStartWindow() {
         return "index";
     }
 }

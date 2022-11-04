@@ -1,10 +1,12 @@
 package ru.FSPO.AIS.newmodels;
 
 
-
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,12 +17,13 @@ import java.util.Set;
 public class RenterLink extends AbstractUser {
 
 
-    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.MERGE)
+
+    @OneToMany(mappedBy = "renterLink", cascade = CascadeType.MERGE)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<RequestToBcLink> requestsSet;
 
-    @OneToMany(mappedBy = "renterLink", cascade=CascadeType.MERGE)
+    @OneToMany(mappedBy = "renterLink", cascade = CascadeType.MERGE)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<RentedPlacement> rentedPlacementSet;

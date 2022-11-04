@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,27 +12,28 @@
 <body>
 <nav th:replace="fragments/navbar:: navbar"></nav>
 <span class="bc_content">Финальная стоимость-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getTotalAmount()}"></span>
+<span class="content bc_content" th:text="${requestToBcLink.getTotalAmount()}"></span>
 <br>
 <span class="bc_content">Дата окончания срока запроса-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getExpirationDate()}"></span>
+<span class="content bc_content" th:text="${requestToBcLink.getExpirationDate()}"></span>
 <br>
 <span class="bc_content">Дата начала аренды-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getStartOfRent()}"></span>
+<span class="content bc_content" th:text="${#dates.format(requestToBcLink.getStartOfRent(), 'MM-yyyy')}"></span>
 <br>
 <span class="bc_content">Дата окончания аренды-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getEndOfRent()}"></span>
+<span class="content bc_content" th:text="${#dates.format(requestToBcLink.getEndOfRent(), 'MM-yyyy')}"></span>
 <br>
 <span class="bc_content">Email для связи-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getRenterLink().getEmail()}"></span>
+<span class="content bc_content" th:text="${requestToBcLink.getRenterLink().getEmail()}"></span>
 <br>
 <span class="bc_content">Имя-</span>
-<span class="content bc_content"  th:text="${requestToBcLink.getRenterLink().getFirstName()}"></span>
+<span class="content bc_content" th:text="${requestToBcLink.getRenterLink().getFirstName()}"></span>
 <br>
 <form th:action="@{/main/request/{id}(id=${rID})}" th:method="POST">
-    <div class="form-group regBut">
+    <div style="left:40%;width:15%" class="form-group regBut">
         <button type="submit" class="btn btn-primary btn-block">Подтвердить ареду</button>
     </div>
 </form>
+<a style="left:43%;width:10%" href="/main/doc_template" class="btn btn-secondary"> Скачать договор</a>
 </body>
 </html>

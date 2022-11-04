@@ -23,8 +23,10 @@ public class RequestToBcLink {
     private Date startOfRent;
     @Column(name = "end_of_rent")
     private Date endOfRent;
-    @Column(name = "is_checked")
-    private boolean isCheked;
+    @Column(name = "is_checked_by_bc_link")
+    private boolean isCheckedByBcLink;
+    @Column(name = "show_to_renter")
+    private boolean showToRenter;
     @Column(name = "total_amount")
     private long totalAmount;
 

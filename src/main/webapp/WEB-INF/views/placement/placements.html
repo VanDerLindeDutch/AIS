@@ -29,14 +29,16 @@
                 <tbody>
                 <tr th:each="place : ${placements}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.getImagePath()})}"
+                        <img style="height: 350px; width: 400px"
+                             th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${place.getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
                     <td class="content" th:text="${floorNumber}"></td>
                     <td class="content" th:text="${place.getSurface()}"></td>
                     <td class="content" th:text="${place.getPrice()}"></td>
-                    <td class="content"  th:if="${!place.getServiceSet().isEmpty()}">
-                        <div style="margin-right: 10px" th:each="service : ${place.getServiceSet()}" th:text="${service.getDescription()}"></div>
+                    <td class="content" th:if="${!place.getServiceSet().isEmpty()}">
+                        <div style="margin-right: 10px" th:each="service : ${place.getServiceSet()}"
+                             th:text="${service.getDescription()}"></div>
                     </td>
                     <td th:if="${USERTYPE == 'RENTER' and place.getRequestsSet().isEmpty() and place.getRentedPlacement()==null}">
 
@@ -47,7 +49,7 @@
                         <button th:replace="fragments/modalWindow:: modalButton"></button>
                         <div th:replace="fragments/modalWindow:: modalWindow"></div>
                     </td>
-                    <td th:if="${isCurrentUser and place.getRentedPlacement()==null}" >
+                    <td th:if="${isCurrentUser and place.getRentedPlacement()==null}">
                         <form th:method="POST"
                               th:action="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/'+{place.getPlacementId()}+'/del'}"
                               style="display: inline">
@@ -58,7 +60,8 @@
                 </tr>
                 </tbody>
             </table>
-            <a th:if="${isCurrentUser}" style="position: relative; margin-top: 10%; margin-bottom: 10%; width: 30%;margin-left: 25%"
+            <a th:if="${isCurrentUser}"
+               style="position: relative; margin-top: 10%; margin-bottom: 10%; width: 30%;margin-left: 25%"
                th:href="${'/main/'+{bcID}+'/floors/'+{floorID}+'/placements/new'}" class="btn btn-info"
                role="button" aria-pressed="true">Добавить
                 помещение</a>
@@ -66,9 +69,15 @@
     </div>
 </div>
 <script th:src="@{/resources/main/placements.js}"></script>
-<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>

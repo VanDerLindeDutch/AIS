@@ -10,7 +10,7 @@ import ru.FSPO.AIS.newmodels.RenterLink;
 
 
 @Service("renterDetailsServiceImpl")
-public class RenterDetailsServiceImpl implements UserDetailsService{
+public class RenterDetailsServiceImpl implements UserDetailsService {
 
 
     private final RenterLinkRepository renterLinkRepository;
@@ -22,7 +22,7 @@ public class RenterDetailsServiceImpl implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        RenterLink renterLink = renterLinkRepository.findRenterLinkByLogin(login).orElseThrow(()-> new UsernameNotFoundException("Renter not found"));
+        RenterLink renterLink = renterLinkRepository.findRenterLinkByLogin(login).orElseThrow(() -> new UsernameNotFoundException("Renter not found"));
         return SecurityUser.fromUser(renterLink);
     }
 }

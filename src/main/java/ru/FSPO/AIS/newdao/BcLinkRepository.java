@@ -7,7 +7,7 @@ import ru.FSPO.AIS.newmodels.BusinessCenter;
 
 import java.util.Optional;
 
-public interface BcLinkRepository  extends CrudRepository<BcLink, Long> {
+public interface BcLinkRepository extends CrudRepository<BcLink, Long> {
     Optional<BcLink> findBcLinkByLogin(String login);
 
     @Query(value = "SELECT b.id FROM BcLink b " +

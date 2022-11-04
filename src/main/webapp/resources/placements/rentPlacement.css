@@ -1,0 +1,7 @@
+#startOfRent:before{
+    content: "Дата начала аренды : ";
+}
+
+#endOfRent:before{
+    content: "Дата окончания аренды : ";
+}

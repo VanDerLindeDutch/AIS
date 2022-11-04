@@ -1,7 +1,8 @@
 package ru.FSPO.AIS.newmodels;
 
-import lombok.*;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -31,7 +32,6 @@ public class Floor {
 
     @OneToMany(mappedBy = "floor")
     private Set<Placement> placements;
-
 
 
     public Floor(Long floorId) {

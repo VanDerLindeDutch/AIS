@@ -8,6 +8,7 @@
     border-radius: 20px;
     font-size: 3vw;
 }
+
 body {
     overflow: hidden;
     /*width: 50%;*/
@@ -45,7 +46,7 @@ body {
     position: relative;
     /*top: 30%;*/
     /*right: 13%;*/
-    top:30%;
+    top: 30%;
     left: 62%;
     font-size: 4vw;
     color: black;

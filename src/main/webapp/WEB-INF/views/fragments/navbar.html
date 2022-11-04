@@ -17,17 +17,19 @@
                 <a class="nav-link" th:href="@{/main}">Показать БЦ <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/main/servPlacements}">Помещения <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/main/servPlacements}">Помещения <span
+                        class="sr-only">(current)</span></a>
             </li>
             <li th:if="${USERTYPE=='LANDLORD'}" class="nav-item">
                 <a class="nav-link" href="/main/addBc">Добавить БЦ</a>
             </li>
-            <li th:if="${USERTYPE=='LANDLORD' }" class="nav-item">
-                <a class="nav-link" href="/main/requests">Посмотреть предложения</a>
+            <li  class="nav-item">
+                <a th:if="${USERTYPE=='LANDLORD' }" class="nav-link" href="/main/requests">Посмотреть предложения</a>
+                <a th:if="${USERTYPE=='RENTER' }" class="nav-link" href="/main/requests">Посмотреть подтверждения</a>
                 <span th:if="${numberOfUnreadRequests!=0}" th:text="${numberOfUnreadRequests}" id="notice">1</span>
             </li>
-            <li th:if="${USERTYPE=='RENTER'}" class="nav-item">
-                <a class="nav-link" th:href="${'/main/renter/'+{ID}+'/rentedPlacements'}">Показать аренд. помещ.</a>
+            <li class="nav-item">
+                <a class="nav-link" th:href="${'/main/'+{ID}+'/rentedPlacements'}">Показать аренд. помещ.</a>
             </li>
         </ul>
     </div>

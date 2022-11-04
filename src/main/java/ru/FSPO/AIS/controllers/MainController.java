@@ -1,5 +1,6 @@
 package ru.FSPO.AIS.controllers;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -9,12 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.FSPO.AIS.newmodels.Permission;
-import ru.FSPO.AIS.newmodels.Role;
 import ru.FSPO.AIS.newdao.*;
-import ru.FSPO.AIS.newmodels.BusinessCenter;
-import ru.FSPO.AIS.newmodels.Floor;
-import ru.FSPO.AIS.newmodels.Placement;
+import ru.FSPO.AIS.newmodels.*;
 import ru.FSPO.AIS.security.SecurityUser;
 import ru.FSPO.AIS.services.TypeOfDownloadedFile;
 
@@ -22,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +32,6 @@ import static ru.FSPO.AIS.services.DownloadFileService.DownloadFile;
 @RequestMapping("/main")
 public class MainController {
 
-    private final Permission permission = Permission.RENT;
     private final ServiceRepository serviceRepository;
     private final RentedPlacementsRepository rentedPlacementsRepository;
     private final PlacementRepository placementRepository;
@@ -58,10 +55,13 @@ public class MainController {
     private void setPresentUser(Model model) {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (securityUser.getRole().equals(Role.LANDLORD)) {
-                long bcId =  securityUser.getId();
-                model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByBcLink(bcId));
-                System.out.println(requestToBcLinkRepository.countRequestToBcLinkByBcLink(bcId));
+            switch (securityUser.getRole()) {
+                case LANDLORD:
+                    model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByBcLink(new BcLink(securityUser.getId())));
+                    break;
+                case RENTER:
+                    model.addAttribute("numberOfUnreadRequests", requestToBcLinkRepository.countRequestToBcLinkByRenterLink(new RenterLink(securityUser.getId())));
+                    break;
             }
             addIdAndUsertype(model, securityUser.getId(), securityUser.getRole());
         }
@@ -69,6 +69,7 @@ public class MainController {
     }
 
     private void addIdAndUsertype(Model model, long ID, Role role) {
+
         model.addAttribute("USERTYPE", role.toString());
         model.addAttribute("ID", ID);
     }
@@ -85,57 +86,97 @@ public class MainController {
     }
 
 
-    @PreAuthorize("hasAuthority('CreateBC')")
+    @GetMapping(value = "/doc_template",
+            produces = "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    public @ResponseBody
+    byte[] getFile() throws IOException {
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("files/contract.docx");
+        return IOUtils.toByteArray(inputStream);
+    }
+
+
     @GetMapping("/requests")
     public String getRequests(Model model) {
         setPresentUser(model);
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Set<ru.FSPO.AIS.newmodels.RequestToBcLink> requests = requestToBcLinkRepository.findRequestsToBcLinkByBcLink(new ru.FSPO.AIS.newmodels.BcLink(securityUser.getId()));
+        Set<RequestToBcLink> requests = new HashSet<>();
+        switch (securityUser.getRole()) {
+            case LANDLORD:
+                requests = requestToBcLinkRepository.findRequestsToBcLinkByBcLink(new BcLink(securityUser.getId()));
+                break;
+            case RENTER:
+                requests = requestToBcLinkRepository.findRequestToBcLinkByRenterLinkAndShowToRenterIsTrue(new RenterLink(securityUser.getId()));
+                break;
+        }
 
         model.addAttribute("requests", requests);
         return "landlord/requestsToRent";
     }
 
 
-    @PreAuthorize("hasAuthority('CreateBC')")
+//    @PreAuthorize("hasAuthority('CreateBC')")
     @GetMapping("/requests/{rID}")
     public String getRequest(@PathVariable("rID") long rID, Model model) {
         setPresentUser(model);
         ru.FSPO.AIS.newmodels.RequestToBcLink request = requestToBcLinkRepository.findById(rID).get();
-        request.setCheked(true);
+        request.setCheckedByBcLink(true);
         requestToBcLinkRepository.save(request);
         model.addAttribute("requestToBcLink", request);
         model.addAttribute("rID", rID);
         return "landlord/request";
     }
 
-    @PreAuthorize("hasAuthority('CreateBC')")
+//    @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("/request/{rID}")
     public String acceptRent(@PathVariable("rID") long rID) {
         ru.FSPO.AIS.newmodels.RequestToBcLink request = requestToBcLinkRepository.findById(rID).get();
-        requestToBcLinkRepository.deleteById(rID);
-        ru.FSPO.AIS.newmodels.RentedPlacement rentedPlacement = new ru.FSPO.AIS.newmodels.RentedPlacement();
-        rentedPlacement.setRenterLink(request.getRenterLink());
-        rentedPlacement.setPlacement(request.getPlacement());
-        rentedPlacement.setPlacementId(request.getPlacement().getPlacementId());
-        rentedPlacement.setStartOfRent(request.getStartOfRent());
-        rentedPlacement.setEndOfRent(request.getEndOfRent());
-        rentedPlacement.setTotalAmount(request.getTotalAmount());
-        rentedPlacementsRepository.save(rentedPlacement);
+        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        switch (securityUser.getRole()) {
+            case LANDLORD:
+                request.setShowToRenter(true);
+                requestToBcLinkRepository.save(request);
+                break;
+            case RENTER:
+                requestToBcLinkRepository.deleteById(rID);
+                ru.FSPO.AIS.newmodels.RentedPlacement rentedPlacement = new ru.FSPO.AIS.newmodels.RentedPlacement();
+                rentedPlacement.setRenterLink(request.getRenterLink());
+                rentedPlacement.setPlacement(request.getPlacement());
+                rentedPlacement.setPlacementId(request.getPlacement().getPlacementId());
+                rentedPlacement.setStartOfRent(request.getStartOfRent());
+                rentedPlacement.setEndOfRent(request.getEndOfRent());
+                rentedPlacement.setTotalAmount(request.getTotalAmount());
+                rentedPlacementsRepository.save(rentedPlacement);
+                break;
+        }
+
+
         return "redirect:/main";
     }
 
-    @PreAuthorize("hasAuthority('CreateBC')")
+
+//    @PreAuthorize("hasAuthority('CreateBC')")
     @PostMapping("/requests/drop/{id}")
     public String dropRequest(@PathVariable("id") long id) {
         requestToBcLinkRepository.deleteById(id);
         return "redirect:/main/requests";
     }
 
-    @GetMapping("/renter/{rID}/rentedPlacements")
-    public String getRentedPlacements(@PathVariable("rID") long rID, Model model) {
+    @GetMapping("/{ID}/rentedPlacements")
+    public String getRentedPlacements(@PathVariable("ID") long ID, Model model) {
         setPresentUser(model);
-        List<ru.FSPO.AIS.newmodels.RentedPlacement> rentedPlacements = rentedPlacementsRepository.findRentedPlacementsByRenterLink(new ru.FSPO.AIS.newmodels.RenterLink(rID));
+        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<RentedPlacement> rentedPlacements = new ArrayList<>();
+        switch (securityUser.getRole()) {
+            case RENTER:
+                rentedPlacements = rentedPlacementsRepository.findRentedPlacementsByRenterLink(new RenterLink(ID));
+                break;
+            case LANDLORD:
+                rentedPlacements = rentedPlacementsRepository.findRentedPlacementsByBcLink(new BcLink(ID));
+                break;
+
+        }
         model.addAttribute("rPlacements", rentedPlacements);
         return "renter/RentedPlacements";
     }
@@ -179,7 +220,8 @@ public class MainController {
         }
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         businessCenter.setImagePath(file.getOriginalFilename());
-        businessCenter.setBcLink(new ru.FSPO.AIS.newmodels.BcLink(securityUser.getId()));
+        businessCenter.setBcLink(new BcLink(securityUser.getId()));
+        System.out.println(businessCenter);
         businessCenterRepository.save(businessCenter);
         return "redirect:/main";
     }
@@ -217,9 +259,10 @@ public class MainController {
     public String showLink(@PathVariable("bcID") long bcID, Model model) {
         setPresentUser(model);
         model.addAttribute("bcID", bcID);
-        model.addAttribute("bcLink", bcLinkRepository.findBcLinkByBusinessCenters(new BusinessCenter(bcID)));
+        model.addAttribute("bcLink", bcLinkRepository.findBcLinkByBusinessCenters(new BusinessCenter(bcID)).get());
         return "main/userInfo";
     }
+
 
     @GetMapping("{bcID}/floors")
     public String getFloors(@PathVariable("bcID") long bcID, Model model) {
@@ -283,20 +326,19 @@ public class MainController {
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
-
         entityManager.clear();
-        Set<Placement> placements = placementRepository.findPlacementsByFloorId( floorID);
+        Set<Placement> placements = placementRepository.findPlacementsByFloorId(floorID);
         if (securityUser.getRole().equals(Role.RENTER)) {
             final Long renterId = securityUser.getId();
             System.out.println(renterId);
             placements.stream()
-                    .filter(x->x.getRequestsSet().size()!=0)
-                    .filter(x->x.getRequestsSet().stream()
-                            .noneMatch(y->y
+                    .filter(x -> x.getRequestsSet().size() != 0)
+                    .filter(x -> x.getRequestsSet().stream()
+                            .noneMatch(y -> y
                                     .getRenterLink()
                                     .getId()
                                     .equals(renterId)))
-                    .forEach(x->x.setRequestsSet(Collections.emptySet()));
+                    .forEach(x -> x.setRequestsSet(Collections.emptySet()));
         }
         model.addAttribute("placements", placements);
         model.addAttribute("bcID", bcID);
@@ -350,8 +392,8 @@ public class MainController {
             requestToBcLink.setStartOfRent(dateStartOfRent);
             requestToBcLink.setEndOfRent(dateEndOfRent);
             requestToBcLink.setExpirationDate(new Date(calendar.getTimeInMillis()));
-            requestToBcLink.setRenterLink(new ru.FSPO.AIS.newmodels.RenterLink(securityUser.getId()));
-            requestToBcLink.setBcLink(new ru.FSPO.AIS.newmodels.BcLink(bcLinkRepository.findBcLinkByPlacementID(plID).get()));
+            requestToBcLink.setRenterLink(new RenterLink(securityUser.getId()));
+            requestToBcLink.setBcLink(new BcLink(bcLinkRepository.findBcLinkByPlacementID(plID).get()));
             requestToBcLink.setPlacement(new Placement(plID));
             requestToBcLinkRepository.save(requestToBcLink);
         } catch (ParseException e) {
@@ -397,43 +439,53 @@ public class MainController {
 
 
     @GetMapping("/servPlacements")
-    public String getServicesPlacementsPage(Model model){
+    public String getServicesPlacementsPage(Model model) {
         setPresentUser(model);
         model.addAttribute("services", serviceRepository.findAll());
         return "main/placementsServices";
     }
 
+
     @PostMapping("/servPlacements")
-    public String group(Model model,  @RequestParam(name = "checkbox", required = false) String string){
+    public String group(Model model, @RequestParam(name = "checkbox", required = false) String string,  @RequestParam(name = "sort", required = false) String sort) {
+
         setPresentUser(model);
         model.addAttribute("services", serviceRepository.findAll());
+        model.addAttribute("checkbox", string);
         if (string != null) {
             SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             final Set<ru.FSPO.AIS.newmodels.Service> services = Arrays.stream(string.split(","))
-                    .map(x->new ru.FSPO.AIS.newmodels.Service(Long.valueOf(x)))
+                    .map(x -> new ru.FSPO.AIS.newmodels.Service(Long.valueOf(x)))
                     .collect(Collectors.toSet());
-
-            List<Placement> placements = placementRepository.findPlacementsByServiceSetContains(entityManager, services);
+            List<Placement> placements = null;
+            if (sort.equals("price")) {
+                    placements = placementRepository.findPlacementsByServiceSetContainsOrdOrderByPrice(entityManager, services);
+            }
+             else {
+                placements = placementRepository.findPlacementsByServiceSetContains(entityManager, services);
+            }
             placements = placements.stream()
                     .filter(
-                            x->x.getServiceSet().containsAll(services)).collect(Collectors.toList());
+                            x -> x.getServiceSet().containsAll(services)).collect(Collectors.toList());
             if (securityUser.getRole().equals(Role.RENTER)) {
                 final Long renterId = securityUser.getId();
-                System.out.println(renterId);
                 placements.stream()
-                        .filter(x->x.getRequestsSet().size()!=0)
-                        .filter(x->x.getRequestsSet().stream()
-                                .noneMatch(y->y
+                        .filter(x -> x.getRequestsSet().size() != 0)
+                        .filter(x -> x.getRequestsSet().stream()
+                                .noneMatch(y -> y
                                         .getRenterLink()
                                         .getId()
                                         .equals(renterId)))
-                        .forEach(x->x.setRequestsSet(Collections.emptySet()));
+                        .forEach(x -> x.setRequestsSet(Collections.emptySet()));
             }
             model.addAttribute("placements", placements);
+            System.out.println(placements.get(0).getFloor().getBusinessCenter().getBcLink().getId());
+            System.out.println(placements.get(0).getFloor().getBusinessCenter().getBcLink());
+            if (securityUser.getRole().equals(Role.LANDLORD)) {
+                model.addAttribute("bc_link_id", securityUser.getId());
+            }
         }
-        else {
 
-        }
         return "main/placementsServices";
     }
 

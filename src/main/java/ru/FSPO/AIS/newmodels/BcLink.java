@@ -1,7 +1,10 @@
 package ru.FSPO.AIS.newmodels;
 
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -15,10 +18,12 @@ public class BcLink extends AbstractUser {
 
     @OneToMany(mappedBy = "bcLink", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<BusinessCenter> businessCenters;
 
     @OneToMany(mappedBy = "bcLink")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<RequestToBcLink> requestToBcLinks;
 
 

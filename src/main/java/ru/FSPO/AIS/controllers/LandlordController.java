@@ -5,14 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.FSPO.AIS.config.SecurityConfig;
 import ru.FSPO.AIS.newdao.BcLinkRepository;
 import ru.FSPO.AIS.newmodels.BcLink;
-
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,16 +37,21 @@ public class LandlordController {
     }
 
 
-
     @PostMapping("/register")
-    public String register(@ModelAttribute("bcLink") @Valid BcLink bcLink, BindingResult bindingResult, Model model) {
+    public String register(@ModelAttribute("bcLink") @Valid BcLink bcLink, BindingResult bindingResult, Model model, @RequestParam String checkPass) {
+
+        if (!bcLink.getPassword().equals(checkPass)) {
+            model.addAttribute("equalPass", true);
+            return "renter/register";
+        }
+
         List<BcLink> list = IterableUtils.toList(bcLinkRepository.findAll());
 
-        if(list.stream().anyMatch(x->x.getLogin().equals(bcLink.getLogin()))){
+        if (list.stream().anyMatch(x -> x.getLogin().equals(bcLink.getLogin()))) {
             model.addAttribute("nonUniqueLogin", true);
             return "landlord/register";
         }
-        if(list.stream().anyMatch(x->x.getEmail().equals(bcLink.getEmail()))){
+        if (list.stream().anyMatch(x -> x.getEmail().equals(bcLink.getEmail()))) {
             model.addAttribute("nonUniqueEmail", true);
             return "landlord/register";
         }

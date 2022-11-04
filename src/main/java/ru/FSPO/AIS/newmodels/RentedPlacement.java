@@ -3,6 +3,7 @@ package ru.FSPO.AIS.newmodels;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,8 +21,10 @@ public class RentedPlacement {
     @Column(name = "total_amount")
     private long totalAmount;
     @Column(name = "start_of_rent")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private Date startOfRent;
     @Column(name = "end_of_rent")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private Date endOfRent;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)

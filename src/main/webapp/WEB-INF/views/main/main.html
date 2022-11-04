@@ -11,7 +11,7 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar:: navbar"></nav>
-<div class="container" >
+<div class="container">
     <div class="row">
         <div class="col-12">
             <table class="table" style="position:relative; margin:0;padding:0; width:70vw; left:-22%">
@@ -27,10 +27,11 @@
                 <tbody>
                 <tr th:each="BC : ${centers}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/uploads/{ref}(ref=${BC.getImagePath()})}"
+                        <img style="height: 350px; width: 400px"
+                             th:src="@{/resources/photos/uploads/{ref}(ref=${BC.getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
-                    <td class="content"  th:text="${BC.getAddress()}"></td>
+                    <td class="content" th:text="${BC.getAddress()}"></td>
                     <td class="content" th:text="${BC.getName()}"></td>
                     <td class="content" th:text="${BC.getShortName()}"></td>
                     <td>
@@ -43,9 +44,15 @@
     </div>
 </div>
 
-<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 
 </body>

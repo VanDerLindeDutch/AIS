@@ -1,6 +1,5 @@
 package ru.FSPO.AIS.security;
 
-import org.hibernate.internal.build.AllowPrintStacktrace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.FSPO.AIS.newdao.BcLinkRepository;
 import ru.FSPO.AIS.newmodels.BcLink;
+import ru.FSPO.AIS.newmodels.RenterLink;
 
 @Service("landlordDetailsServiceImpl")
 public class LandlordDetailsServiceImpl implements UserDetailsService {
@@ -22,7 +22,7 @@ public class LandlordDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        BcLink bcLink = bcLinkRepository.findBcLinkByLogin(login).orElseThrow(()->new UsernameNotFoundException("landlord not foudn"));
+        BcLink bcLink = bcLinkRepository.findBcLinkByLogin(login).orElseThrow(() -> new UsernameNotFoundException("landlord not foudn"));
         return SecurityUser.fromUser(bcLink);
     }
 }

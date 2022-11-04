@@ -10,7 +10,7 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar:: navbar"></nav>
-<div class="container" >
+<div class="container">
     <div class="row">
         <div class="col-12">
             <table class="table" style="position:relative; margin:0;padding:0; width:70vw; left:-22%">
@@ -18,7 +18,7 @@
                 <tr>
                     <th style=" width: 200px" class="content" scope="col">Фото помещения</th>
                     <th class="content" scope="col">Полная указанная стоимость</th>
-                    <th class="content" scope="col">Дата окончания срока запроса </th>
+                    <th class="content" scope="col">Дата окончания срока запроса</th>
                     <th class="content" scope="col">Дата начала аренды</th>
                     <th class="content" scope="col">Дата конца аренды</th>
                     <th class="content" scope="col">Рента</th>
@@ -29,20 +29,21 @@
                 <tbody>
                 <tr th:each="request : ${requests}">
                     <td style="display:inline-block;width: 400px">
-                        <img style="height: 350px; width: 400px" th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${request.getPlacement().getImagePath()})}"
+                        <img style="height: 350px; width: 400px"
+                             th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${request.getPlacement().getImagePath()})}"
                              class=" img-thumbnail" alt="Sheep">
                     </td>
-                    <td class="content"  th:text="${request.getTotalAmount()}"></td>
-                    <td class="content"  th:text="${request.getExpirationDate()}"></td>
-                    <td class="content"  th:text="${request.getStartOfRent()}"></td>
-                    <td class="content"  th:text="${request.getEndOfRent()}"></td>
-                    <td class="content"  th:text="${request.getPlacement().getPrice()}"></td>
+                    <td class="content" th:text="${request.getTotalAmount()}"></td>
+                    <td class="content" th:text="${request.getExpirationDate()}"></td>
+                    <td class="content" th:text="${#dates.format(request.getStartOfRent(), 'MM-yyyy')}"></td>
+                    <td class="content" th:text="${#dates.format(request.getEndOfRent(), 'MM-yyyy')}"></td>
+                    <td class="content" th:text="${request.getPlacement().getPrice()}"></td>
                     <td>
                         <a class="btn btn-primary" th:href="@{/main/requests/{id}(id=${request.getRequestId()})}">Перейти</a>
                     </td>
                     <td>
                         <form th:action="@{/main/requests/drop/{id}(id=${request.getRequestId()})}" th:method="POST">
-                            <button type="submit" class="btn btn-danger" >Отклонить</button>
+                            <button type="submit" class="btn btn-danger">Отклонить</button>
                         </form>
                     </td>
                 </tr>

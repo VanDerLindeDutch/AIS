@@ -10,12 +10,14 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar:: navbar"></nav>
-<div class="container" >
+<div class="container">
     <div class="row">
         <div class="col-12">
             <table class="table table-image">
                 <thead>
                 <tr>
+                    <th class="content" scope="col">Фото</th>
+                    <th class="content" scope="col">Адрес</th>
                     <th class="content" scope="col">Полная стоимость</th>
                     <th class="content" scope="col">Ежемесячные платежи</th>
                     <th class="content" scope="col">Начало аренды</th>
@@ -24,13 +26,20 @@
                 </thead>
                 <tbody>
                 <tr th:each="rPL : ${rPlacements}">
+                    <td style="display:inline-block;width: 400px">
+                        <img style="height: 350px; width: 400px"
+                             th:src="@{/resources/photos/placementsPhotos/{ref}(ref=${rPL.getPlacement().getImagePath()})}"
+                             class=" img-thumbnail" alt="Sheep">
+                    </td>
+                    <td class="content"
+                        th:text="${rPL.getPlacement().getFloor().getBusinessCenter().getAddress()}"></td>
                     <td class="content" th:text="${rPL.getTotalAmount()}"></td>
                     <td class="content" th:text="${rPL.getPlacement().getPrice()}"></td>
-                    <td class="content" th:text="${rPL.getStartOfRent()}"></td>
-                    <td class="content" th:text="${rPL.getEndOfRent()}"></td>
-<!--                    <td>-->
-<!--                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>-->
-<!--                    </td>-->
+                    <td class="content" th:text="${#dates.format(rPL.getStartOfRent(), 'MM-yyyy')}"></td>
+                    <td class="content" th:text="${#dates.format(rPL.getEndOfRent(), 'MM-yyyy')}"></td>
+                    <!--                    <td>-->
+                    <!--                        <a class="btn btn-primary" th:href="@{/main/{id}(id=${BC.getBcId()})}">Перейти</a>-->
+                    <!--                    </td>-->
                 </tr>
                 </tbody>
             </table>

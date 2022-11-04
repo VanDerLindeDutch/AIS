@@ -22,9 +22,27 @@
                 </button>
             </div>
             <div class="modal-body">
-                <span class="startDate" th:text="${place.getRentedPlacement().getStartOfRent()}"></span>
+                <span class="startDate"
+                      th:text="${#dates.format(place.getRentedPlacement().getStartOfRent(), 'MM-yyyy')}"></span>
                 <br>
-                <span class="endDate" th:text="${place.getRentedPlacement().getEndOfRent()}"></span>
+                <span class="endDate"
+                      th:text="${#dates.format(place.getRentedPlacement().getEndOfRent(), 'MM-yyyy')}"></span>
+                <br>
+                <span th:if="${isCurrentUser!=null}">
+                    <span th:if="${isCurrentUser}"
+                          th:text="${place.getRentedPlacement().getRenterLink().getFirstName()}"></span>
+                </span>
+                <span th:if="${bc_link_id!=null}">
+
+                    <span th:if="${place.getFloor().getBusinessCenter().getBcLink().getId() == bc_link_id}">
+                        <span>Имя-</span>
+                        <span th:text="${place.getRentedPlacement().getRenterLink().getFirstName()}"></span>
+                        <span> Email-</span>
+                        <span th:text="${place.getRentedPlacement().getRenterLink().getEmail()}"></span>
+                    </span>
+
+                </span>
+
             </div>
         </div>
     </div>
